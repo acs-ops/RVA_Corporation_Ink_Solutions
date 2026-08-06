@@ -89,17 +89,17 @@ a {
 .search-area {
     display: flex;
     flex: 1;
-    max-width: 500px;
+    max-width: 650px;   /* was 500px */
 }
 
 .search-area input {
     width: 100%;
-    padding: 12px 15px;
+    padding: 16px 20px; /* taller */
     border: 2px solid #0d47a1;
     border-right: none;
-    border-radius: 8px 0 0 8px;
+    border-radius: 10px 0 0 10px;
     outline: none;
-    font-size: 14px;
+    font-size: 18px;    /* bigger text */
 }
 
 .search-area input:focus {
@@ -107,12 +107,13 @@ a {
 }
 
 .search-area button {
-    width: 52px;
+    width: 70px;         /* bigger button */
     background: #0d47a1;
     color: #ffffff;
     border: none;
-    border-radius: 0 8px 8px 0;
+    border-radius: 0 10px 10px 0;
     cursor: pointer;
+    font-size: 22px;     /* bigger search icon */
 }
 
 .search-area button:hover {
