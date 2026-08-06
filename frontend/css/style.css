@@ -27,7 +27,10 @@ a {
 .container {
     max-width: 1200px;
 }
-
+/* Make only the header wider */
+.top-header .container {
+    max-width: 1500px;
+}
 
 /* =========================================================
    HEADER
@@ -44,8 +47,8 @@ a {
 .header-container {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: 20px;
+    padding: 10px 0;
 }
 
 
@@ -54,13 +57,13 @@ a {
 .logo-area {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 15px;
     flex-shrink: 0;
 }
 
 .logo {
-    width: 180px;
-    height: 180px;
+    width: 160px;
+    height: 160px;
     object-fit: contain;
 }
 
@@ -88,20 +91,18 @@ a {
 
 .search-area {
     display: flex;
-    flex: 2;
-    width: 100%;
-    max-width: 700px;
-    margin: 0 20px;
+    flex: 1;
+    margin: 0 30px;
 }
 
 .search-area input {
-    width: 100%;
-    padding: 16px 20px; /* taller */
+    flex: 1;
+    padding: 16px 20px;
+    font-size: 18px;
     border: 2px solid #0d47a1;
     border-right: none;
     border-radius: 10px 0 0 10px;
     outline: none;
-    font-size: 18px;    /* bigger text */
 }
 
 .search-area input:focus {
@@ -109,13 +110,13 @@ a {
 }
 
 .search-area button {
-    width: 70px;         /* bigger button */
-    background: #0d47a1;
-    color: #ffffff;
+    width: 70px;
     border: none;
+    background: #0d47a1;
+    color: white;
     border-radius: 0 10px 10px 0;
+    font-size: 22px;
     cursor: pointer;
-    font-size: 22px;     /* bigger search icon */
 }
 
 .search-area button:hover {
@@ -130,18 +131,15 @@ a {
 .account-area {
     display: flex;
     align-items: center;
-    gap: 24px;
-    white-space: nowrap;
+    gap: 25px;
+    flex-shrink: 0;
 }
 
 .account-area a {
+    font-size: 18px;
+    font-weight: 700;
     text-decoration: none;
     color: #0d47a1;
-    font-size: 18px;      /* was 13px */
-    font-weight: 700;     /* bolder */
-    display: flex;
-    align-items: center;
-    gap: 6px;
 }
 
 .account-area a:hover {
@@ -149,8 +147,7 @@ a {
 }
 
 .account-area i {
-    margin-right: 6px;
-    font-size: 20px;      /* make the icons bigger too */
+    font-size: 20px;
 }
 
 
@@ -603,20 +600,19 @@ gap: 15px;
 
 .company-name h1 {
     margin: 0;
-    font-size: 38px;
+    font-size: 36px;
     font-weight: 800;
-    line-height: 1.1;
     color: #0d47a1;
+    line-height: 1.1;
 }
 
 .company-name span {
     display: block;
-    margin-top: 8px;
+    margin-top: 6px;
     font-size: 18px;
     font-weight: 700;
-    letter-spacing: 1px;
     color: #f4b400;
-    line-height: 1.4;
+    line-height: 1.3;
 }
 
 /* Mobile */
