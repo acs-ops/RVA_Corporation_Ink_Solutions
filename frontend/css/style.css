@@ -96,8 +96,12 @@ a {
 
 .search-area input {
     width: 100%;
-    padding: 15px 20px;
-    font-size: 17px;
+    padding: 16px 20px; /* taller */
+    border: 2px solid #0d47a1;
+    border-right: none;
+    border-radius: 10px 0 0 10px;
+    outline: none;
+    font-size: 18px;    /* bigger text */
 }
 
 .search-area input:focus {
@@ -105,8 +109,13 @@ a {
 }
 
 .search-area button {
-    width: 65px;
-    font-size: 20px;
+    width: 70px;         /* bigger button */
+    background: #0d47a1;
+    color: #ffffff;
+    border: none;
+    border-radius: 0 10px 10px 0;
+    cursor: pointer;
+    font-size: 22px;     /* bigger search icon */
 }
 
 .search-area button:hover {
