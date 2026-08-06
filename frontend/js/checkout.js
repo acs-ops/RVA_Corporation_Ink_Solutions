@@ -1234,7 +1234,7 @@ function processOrder() {
         formatCurrency(total) +
         "\n\n" +
 
-        "Thank you for shopping with RVA Corporation!"
+        "Thank you for shopping with Romeo V Austria Corporation!"
 
     );
 
