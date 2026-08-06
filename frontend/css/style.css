@@ -59,8 +59,8 @@ a {
 }
 
 .logo {
-    width: 200px;
-    height: 200px;
+    width: 180px;
+    height: 180px;
     object-fit: contain;
 }
 
@@ -96,12 +96,8 @@ a {
 
 .search-area input {
     width: 100%;
-    padding: 16px 20px; /* taller */
-    border: 2px solid #0d47a1;
-    border-right: none;
-    border-radius: 10px 0 0 10px;
-    outline: none;
-    font-size: 18px;    /* bigger text */
+    padding: 15px 20px;
+    font-size: 17px;
 }
 
 .search-area input:focus {
@@ -109,13 +105,8 @@ a {
 }
 
 .search-area button {
-    width: 70px;         /* bigger button */
-    background: #0d47a1;
-    color: #ffffff;
-    border: none;
-    border-radius: 0 10px 10px 0;
-    cursor: pointer;
-    font-size: 22px;     /* bigger search icon */
+    width: 65px;
+    font-size: 20px;
 }
 
 .search-area button:hover {
