@@ -32,14 +32,7 @@ const products = [
         image: "images/hp/printer/hp-m830.JPG"
     },
 
-    {
-        name: "HP LaserJet M775",
-        brand: "hp",
-        category: "Printer",
-        price: 37990,
-        image: "images/hp/printer/hp-m775.JPG"
-    },
-
+    
     {
         name: "HP LaserJet Pro M137fnw",
         brand: "hp",
