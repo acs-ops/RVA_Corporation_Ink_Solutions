@@ -1,0 +1,1636 @@
+/* =========================================================
+   RVA CORPORATION INK SOLUTIONS
+   MAIN WEBSITE STYLES
+   ========================================================= */
+
+/* ================= GLOBAL ================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f5f7fb;
+    color: #222;
+}
+
+a {
+    transition: all 0.3s ease;
+}
+
+.container {
+    max-width: 1200px;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.top-header {
+    background: #ffffff;
+    padding: 18px 0;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    position: relative;
+    z-index: 10;
+}
+
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+}
+
+
+/* ================= LOGO ================= */
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-shrink: 0;
+}
+
+.logo {
+    width: 200px;
+    height: 200px;
+    object-fit: contain;
+}
+
+.logo-area h1 {
+    margin: 0;
+    color: #0d47a1;
+    font-size: 32px;
+    font-weight: 800;
+    line-height: 1.1;
+}
+
+.logo-area span {
+    display: block;
+    margin-top: 5px;
+    color: #f4b400;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+.search-area {
+    display: flex;
+    flex: 1;
+    max-width: 500px;
+}
+
+.search-area input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #0d47a1;
+    border-right: none;
+    border-radius: 8px 0 0 8px;
+    outline: none;
+    font-size: 14px;
+}
+
+.search-area input:focus {
+    box-shadow: 0 0 0 3px rgba(13, 71, 161, 0.12);
+}
+
+.search-area button {
+    width: 52px;
+    background: #0d47a1;
+    color: #ffffff;
+    border: none;
+    border-radius: 0 8px 8px 0;
+    cursor: pointer;
+}
+
+.search-area button:hover {
+    background: #083578;
+}
+
+
+/* =========================================================
+   ACCOUNT AREA
+   ========================================================= */
+
+.account-area {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    white-space: nowrap;
+}
+
+.account-area a {
+    text-decoration: none;
+    color: #0d47a1;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.account-area a:hover {
+    color: #f4b400;
+}
+
+.account-area i {
+    margin-right: 4px;
+}
+
+
+/* =========================================================
+   MAIN NAVIGATION
+   ========================================================= */
+
+.main-menu {
+    background: #0d47a1;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+}
+
+.main-menu ul {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    list-style: none;
+}
+
+.main-menu li {
+    margin: 0;
+}
+
+.main-menu a {
+    display: block;
+    padding: 14px 24px;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 700;
+    position: relative;
+}
+
+.main-menu a::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 6px;
+    width: 0;
+    height: 2px;
+    background: #ffd54f;
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.main-menu a:hover {
+    color: #ffd54f;
+}
+
+.main-menu a:hover::after {
+    width: 60%;
+}
+
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.hero {
+    background:
+        linear-gradient(
+            135deg,
+            rgba(0, 86, 210, 0.98),
+            rgba(0, 58, 153, 0.98)
+        );
+
+    color: #ffffff;
+    text-align: center;
+    padding: 85px 20px;
+}
+
+.hero h1 {
+    max-width: 850px;
+    margin: 0 auto;
+    font-size: 44px;
+    line-height: 1.2;
+    font-weight: 800;
+}
+
+.hero p {
+    max-width: 750px;
+    margin: 22px auto 0;
+    font-size: 17px;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.92);
+}
+
+.hero .btn {
+    border-radius: 7px;
+    padding: 11px 24px;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.hero .btn-warning {
+    color: #222;
+}
+
+.hero .btn-warning:hover {
+    background: #ffffff;
+    border-color: #ffffff;
+}
+
+
+/* =========================================================
+   SECTION HEADINGS
+   ========================================================= */
+
+section h2 {
+    color: #123b70;
+    font-weight: 800;
+}
+
+section h2::after {
+    content: "";
+    display: block;
+    width: 55px;
+    height: 3px;
+    background: #f4b400;
+    margin: 12px auto 0;
+    border-radius: 5px;
+}
+
+
+/* =========================================================
+   SHOP BY BRAND
+   ========================================================= */
+
+.category-card {
+    height: 100%;
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 28px 20px;
+    text-align: center;
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.08);
+    border: 1px solid #eeeeee;
+    transition: all 0.3s ease;
+}
+
+.category-card:hover {
+    transform: translateY(-7px);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.13);
+    border-color: #d8e5f7;
+}
+
+.category-card img {
+    width: 120px;
+    height: 70px;
+    object-fit: contain;
+    margin-bottom: 18px;
+}
+
+.category-card h4 {
+    color: #123b70;
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.category-card .btn {
+    border-radius: 6px;
+    font-weight: 600;
+    padding: 6px 14px;
+}
+
+
+/* =========================================================
+   FEATURED PRODUCTS
+   ========================================================= */
+
+.product-card {
+    height: 100%;
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 18px;
+    text-align: center;
+    border: 1px solid #e8e8e8;
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.product-card:hover {
+    transform: translateY(-7px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.14);
+}
+
+.product-card img,
+.product-image {
+    width: 100%;
+    height: 190px;
+    object-fit: contain;
+    padding: 10px;
+    margin-bottom: 12px;
+}
+
+.product-card h5 {
+    color: #123b70;
+    font-size: 16px;
+    font-weight: 700;
+    min-height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.price {
+    color: #0d47a1;
+    font-size: 19px;
+    font-weight: 800;
+    margin: 8px 0 14px;
+}
+
+.product-card .btn {
+    margin-top: auto;
+    border-radius: 7px;
+    font-weight: 700;
+    padding: 9px;
+}
+
+.product-card .btn-primary {
+    background: #0d47a1;
+    border-color: #0d47a1;
+}
+
+.product-card .btn-primary:hover {
+    background: #083578;
+    border-color: #083578;
+}
+
+
+/* =========================================================
+   WHY CHOOSE RVA
+   ========================================================= */
+
+.why-rva {
+    background: #ffffff;
+    padding: 75px 0;
+    margin-top: 30px;
+    border-top: 1px solid #eeeeee;
+}
+
+.feature-icon {
+    font-size: 48px;
+    color: #0d47a1;
+    margin-bottom: 18px;
+}
+
+.why-rva h4 {
+    margin-top: 10px;
+    color: #123b70;
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.why-rva p {
+    max-width: 230px;
+    margin: 10px auto 0;
+    color: #666666;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   TRUSTED BRANDS
+   ========================================================= */
+
+.brands {
+    background: #f8f9fa;
+}
+
+.brand-card {
+    height: 100%;
+    background: #ffffff;
+    padding: 35px 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.brand-card:hover {
+    transform: translateY(-7px);
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.12);
+}
+
+.brand-card h3 {
+    color: #0d47a1;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+footer {
+    background: #062d6b;
+    color: #ffffff;
+    text-align: center;
+    padding: 28px 20px;
+    margin-top: 0;
+}
+
+footer p {
+    margin: 0;
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   RESPONSIVE DESIGN
+   ========================================================= */
+
+@media (max-width: 992px) {
+
+    .header-container {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .search-area {
+        order: 3;
+        flex-basis: 100%;
+        max-width: 650px;
+    }
+
+    .account-area {
+        gap: 12px;
+    }
+
+    .hero h1 {
+        font-size: 36px;
+    }
+
+}
+
+
+@media (max-width: 768px) {
+
+    .logo {
+        width: 70px;
+        height: 70px;
+    }
+
+    .logo-area h1 {
+        font-size: 23px;
+    }
+
+    .logo-area span {
+        font-size: 11px;
+    }
+
+    .account-area {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .main-menu ul {
+        flex-wrap: wrap;
+    }
+
+    .main-menu a {
+        padding: 11px 12px;
+        font-size: 12px;
+    }
+
+    .hero {
+        padding: 65px 18px;
+    }
+
+    .hero h1 {
+        font-size: 31px;
+    }
+
+    .hero p {
+        font-size: 15px;
+    }
+
+}
+
+
+@media (max-width: 576px) {
+
+    .top-header {
+        padding: 15px 0;
+    }
+
+    .logo-area {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .search-area {
+        width: 100%;
+    }
+
+    .account-area {
+        flex-wrap: wrap;
+    }
+
+    .main-menu ul {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        text-align: center;
+    }
+
+    .main-menu a {
+        padding: 10px 5px;
+    }
+
+    .hero h1 {
+        font-size: 27px;
+    }
+
+    .hero .btn {
+        display: block;
+        width: 100%;
+        margin: 8px 0 !important;
+    }
+
+    .category-card {
+        padding: 25px 15px;
+    }
+
+    .product-card img,
+    .product-image {
+        height: 180px;
+    }
+
+}
+/* =========================================================
+   RVA CORPORATION HEADER
+   ========================================================= */
+
+.logo-area {
+display: flex;
+align-items: center;
+gap: 15px;
+}
+
+.logo {
+width: 200px;
+height: 200px;
+object-fit: contain;
+}
+
+.company-name {
+display: flex;
+flex-direction: column;
+justify-content: center;
+}
+
+.company-name h1 {
+margin: 0;
+font-size: 30px;
+font-weight: 700;
+line-height: 1.1;
+}
+
+.company-name span {
+display: block;
+margin-top: 6px;
+font-size: 12px;
+font-weight: 600;
+letter-spacing: 0.5px;
+line-height: 1.3;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+
+```
+.logo-area {
+    justify-content: center;
+    text-align: center;
+}
+
+.logo {
+    width: 65px;
+    height: 65px;
+}
+
+.company-name h1 {
+    font-size: 22px;
+}
+
+.company-name span {
+    font-size: 9px;
+}
+```
+
+}
+/* =========================================================
+   RVA CORPORATION - SERVICES PAGE
+   ========================================================= */
+
+/* Services hero */
+.services-hero {
+    background: linear-gradient(135deg, #f4f8ff, #ffffff);
+    padding: 55px 20px;
+    border-top: 4px solid #174ea6;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.services-hero h1 {
+    color: #123f7a;
+    font-size: 42px;
+    font-weight: 800;
+    margin-bottom: 12px;
+}
+
+.services-hero p {
+    color: #555;
+    font-size: 17px;
+    margin: 0;
+}
+
+
+/* Services introduction */
+.services-intro {
+    padding: 65px 20px 35px;
+    text-align: center;
+}
+
+.services-intro h2 {
+    color: #123f7a;
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 18px;
+}
+
+.services-intro p {
+    max-width: 800px;
+    margin: 0 auto;
+    color: #666;
+    line-height: 1.7;
+}
+
+
+/* Services grid */
+.services-grid {
+    padding: 35px 20px 70px;
+}
+
+
+/* Individual service card */
+.service-card {
+    height: 100%;
+    background: #ffffff;
+    border: 1px solid #e1e7ef;
+    border-radius: 12px;
+    padding: 35px 25px;
+    text-align: center;
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+
+/* Blue top line */
+.service-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: #174ea6;
+}
+
+
+/* Hover effect */
+.service-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+    border-color: #174ea6;
+}
+
+
+/* Service icon */
+.service-icon {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    background: #eef5ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #174ea6;
+    font-size: 30px;
+    transition: all 0.3s ease;
+}
+
+
+/* Icon hover */
+.service-card:hover .service-icon {
+    background: #174ea6;
+    color: #ffffff;
+}
+
+
+/* Service title */
+.service-card h3 {
+    color: #123f7a;
+    font-size: 21px;
+    font-weight: 700;
+    margin-bottom: 13px;
+}
+
+
+/* Service description */
+.service-card p {
+    color: #666;
+    font-size: 15px;
+    line-height: 1.7;
+    margin-bottom: 0;
+}
+
+
+/* =========================================================
+   WHY CHOOSE RVA
+   ========================================================= */
+
+.why-rva {
+    background: #f5f8fc;
+    padding: 70px 20px;
+}
+
+.why-rva h2 {
+    color: #123f7a;
+    font-size: 32px;
+    font-weight: 800;
+}
+
+.why-rva > .container > p {
+    color: #666;
+}
+
+
+/* Why RVA cards */
+.why-card {
+    height: 100%;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 35px 25px;
+    text-align: center;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.why-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.10);
+}
+
+.why-card i {
+    font-size: 42px;
+    color: #174ea6;
+}
+
+.why-card h4 {
+    color: #123f7a;
+    font-weight: 700;
+    margin-top: 18px;
+    margin-bottom: 12px;
+}
+
+.why-card p {
+    color: #666;
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   REQUEST SERVICE SECTION
+   ========================================================= */
+
+.request-service {
+    padding: 75px 20px;
+    text-align: center;
+    background: #ffffff;
+}
+
+.request-service h2 {
+    color: #123f7a;
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 15px;
+}
+
+.request-service p {
+    color: #666;
+    margin-bottom: 30px;
+}
+
+.request-service .btn {
+    padding: 12px 25px;
+    border-radius: 7px;
+    font-weight: 600;
+    margin: 5px;
+}
+
+
+/* =========================================================
+   MOBILE RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .services-hero {
+        padding: 40px 15px;
+    }
+
+    .services-hero h1 {
+        font-size: 32px;
+    }
+
+    .services-intro {
+        padding-top: 45px;
+    }
+
+    .services-intro h2 {
+        font-size: 27px;
+    }
+
+    .service-card {
+        padding: 30px 20px;
+    }
+
+    .why-rva {
+        padding: 50px 15px;
+    }
+
+    .request-service {
+        padding: 55px 15px;
+    }
+
+}
+/* =========================================================
+   RVA CORPORATION - ABOUT US PAGE
+   ========================================================= */
+
+/* About Hero */
+.about-hero {
+    background: linear-gradient(135deg, #f4f8ff, #ffffff);
+    padding: 55px 20px;
+    border-top: 4px solid #174ea6;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.about-hero h1 {
+    color: #123f7a;
+    font-size: 42px;
+    font-weight: 800;
+    margin-bottom: 12px;
+}
+
+.about-hero p {
+    color: #555;
+    font-size: 17px;
+    margin: 0;
+}
+
+
+/* About Introduction */
+.about-intro {
+    background: #ffffff;
+}
+
+.about-label {
+    display: inline-block;
+    color: #174ea6;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    margin-bottom: 10px;
+}
+
+.about-intro h2 {
+    color: #123f7a;
+    font-size: 34px;
+    font-weight: 800;
+    margin-bottom: 20px;
+}
+
+.about-intro p {
+    color: #666;
+    line-height: 1.8;
+    margin-bottom: 15px;
+}
+
+
+/* About Highlight Box */
+.about-highlight {
+    background: #f5f8fc;
+    border-radius: 14px;
+    padding: 30px;
+    border: 1px solid #e1e7ef;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+}
+
+.highlight-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    padding: 18px 0;
+    border-bottom: 1px solid #dfe5ed;
+}
+
+.highlight-item:last-child {
+    border-bottom: none;
+}
+
+.highlight-item > i {
+    flex-shrink: 0;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: #174ea6;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 23px;
+}
+
+.highlight-item h4 {
+    color: #123f7a;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.highlight-item p {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0;
+}
+
+
+/* What We Do */
+.what-we-do {
+    background: #f5f8fc;
+    padding: 70px 20px;
+}
+
+.what-we-do h2 {
+    color: #123f7a;
+    font-size: 32px;
+    font-weight: 800;
+}
+
+.what-we-do > .container > .text-center > p {
+    line-height: 1.7;
+}
+
+
+/* About Cards */
+.about-card {
+    height: 100%;
+    background: #ffffff;
+    border: 1px solid #e1e7ef;
+    border-radius: 12px;
+    padding: 30px 22px;
+    text-align: center;
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.about-card:hover {
+    transform: translateY(-7px);
+    border-color: #174ea6;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.10);
+}
+
+.about-card-icon {
+    width: 68px;
+    height: 68px;
+    margin: 0 auto 18px;
+    border-radius: 50%;
+    background: #eef5ff;
+    color: #174ea6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    transition: all 0.3s ease;
+}
+
+.about-card:hover .about-card-icon {
+    background: #174ea6;
+    color: #ffffff;
+}
+
+.about-card h4 {
+    color: #123f7a;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.about-card p {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.7;
+    margin: 0;
+}
+
+
+/* Mission and Vision */
+.mission-section {
+    background: #ffffff;
+    padding: 70px 20px;
+}
+
+.mission-card {
+    height: 100%;
+    background: #ffffff;
+    border: 1px solid #e1e7ef;
+    border-radius: 14px;
+    padding: 40px 30px;
+    text-align: center;
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.mission-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.10);
+}
+
+.mission-icon {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    background: #eef5ff;
+    color: #174ea6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+}
+
+.mission-card h2 {
+    color: #123f7a;
+    font-size: 27px;
+    font-weight: 800;
+    margin-bottom: 15px;
+}
+
+.mission-card p {
+    color: #666;
+    line-height: 1.8;
+    margin: 0;
+}
+
+
+/* Why RVA */
+.why-about {
+    background: #f5f8fc;
+    padding: 70px 20px;
+}
+
+.why-about h2 {
+    color: #123f7a;
+    font-size: 32px;
+    font-weight: 800;
+}
+
+.why-about-card {
+    height: 100%;
+    background: #ffffff;
+    border: 1px solid #e1e7ef;
+    border-radius: 12px;
+    padding: 35px 25px;
+    text-align: center;
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.why-about-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.10);
+}
+
+.why-about-card > i {
+    font-size: 42px;
+    color: #174ea6;
+    margin-bottom: 15px;
+}
+
+.why-about-card h4 {
+    color: #123f7a;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.why-about-card p {
+    color: #666;
+    line-height: 1.7;
+    margin: 0;
+}
+
+
+/* About Call To Action */
+.about-cta {
+    background: #ffffff;
+    padding: 75px 20px;
+    text-align: center;
+}
+
+.about-cta h2 {
+    color: #123f7a;
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 15px;
+}
+
+.about-cta p {
+    color: #666;
+    margin-bottom: 25px;
+}
+
+.about-cta .btn {
+    margin: 5px;
+    padding: 12px 25px;
+    border-radius: 7px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   ABOUT PAGE - MOBILE
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .about-hero {
+        padding: 40px 15px;
+    }
+
+    .about-hero h1 {
+        font-size: 32px;
+    }
+
+    .about-intro h2 {
+        font-size: 28px;
+    }
+
+    .about-highlight {
+        padding: 22px;
+    }
+
+    .what-we-do,
+    .mission-section,
+    .why-about {
+        padding: 50px 15px;
+    }
+
+    .what-we-do h2,
+    .why-about h2,
+    .about-cta h2 {
+        font-size: 27px;
+    }
+
+    .mission-card {
+        padding: 30px 22px;
+    }
+
+    .about-cta {
+        padding: 55px 15px;
+    }
+
+}
+/* =========================================================
+   RVA CORPORATION - CONTACT PAGE
+   ========================================================= */
+
+.contact-hero {
+    background: linear-gradient(135deg, #f4f8ff, #ffffff);
+    padding: 60px 20px;
+    border-top: 4px solid #174ea6;
+    border-bottom: 1px solid #e1e7ef;
+}
+
+.contact-label {
+    display: inline-block;
+    color: #174ea6;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    margin-bottom: 10px;
+}
+
+.contact-hero h1 {
+    color: #123f7a;
+    font-size: 42px;
+    font-weight: 800;
+    margin-bottom: 15px;
+}
+
+.contact-hero p {
+    max-width: 750px;
+    margin: auto;
+    color: #666;
+    font-size: 17px;
+    line-height: 1.7;
+}
+
+
+/* QUICK CONTACT */
+
+.contact-quick {
+    padding: 60px 20px;
+    background: #ffffff;
+}
+
+.quick-contact-card {
+    height: 100%;
+    text-align: center;
+    padding: 35px 25px;
+    background: #ffffff;
+    border: 1px solid #e1e7ef;
+    border-radius: 12px;
+    box-shadow: 0 5px 18px rgba(0,0,0,.05);
+    transition: .3s ease;
+}
+
+.quick-contact-card:hover {
+    transform: translateY(-7px);
+    box-shadow: 0 12px 28px rgba(0,0,0,.10);
+    border-color: #174ea6;
+}
+
+.quick-icon {
+    width: 65px;
+    height: 65px;
+    margin: 0 auto 18px;
+    border-radius: 50%;
+    background: #eef5ff;
+    color: #174ea6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 27px;
+}
+
+.quick-contact-card h3 {
+    color: #123f7a;
+    font-size: 21px;
+    font-weight: 700;
+}
+
+.quick-contact-card p {
+    color: #666;
+}
+
+.quick-contact-card a {
+    color: #174ea6;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+
+/* OFFICE */
+
+.contact-office {
+    padding: 70px 20px;
+    background: #f5f8fc;
+}
+
+.contact-office h2,
+.contact-email h2,
+.contact-location h2,
+.contact-branches h2,
+.contact-inquiry h2 {
+    color: #123f7a;
+    font-size: 32px;
+    font-weight: 800;
+}
+
+.contact-office > .container > .text-center > p,
+.contact-email > .container > .text-center > p,
+.contact-location > .container > .text-center > p,
+.contact-branches > .container > .text-center > p,
+.contact-inquiry p {
+    color: #666;
+}
+
+.contact-info-card {
+    height: 100%;
+    padding: 30px 25px;
+    background: #ffffff;
+    border: 1px solid #e1e7ef;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 5px 18px rgba(0,0,0,.05);
+    transition: .3s ease;
+}
+
+.contact-info-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 28px rgba(0,0,0,.10);
+}
+
+.contact-info-icon {
+    width: 62px;
+    height: 62px;
+    margin: 0 auto 18px;
+    border-radius: 50%;
+    background: #eef5ff;
+    color: #174ea6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+}
+
+.contact-info-card h4 {
+    color: #123f7a;
+    font-weight: 700;
+}
+
+.contact-info-card p {
+    color: #666;
+    line-height: 1.8;
+}
+
+.contact-info-card a {
+    color: #174ea6;
+    text-decoration: none;
+}
+
+
+/* EMAIL */
+
+.contact-email {
+    padding: 70px 20px;
+    background: #ffffff;
+}
+
+.email-contact-card {
+    height: 100%;
+    padding: 30px 20px;
+    text-align: center;
+    background: #f8fafc;
+    border: 1px solid #e1e7ef;
+    border-radius: 12px;
+    transition: .3s ease;
+}
+
+.email-contact-card:hover {
+    transform: translateY(-5px);
+    border-color: #174ea6;
+}
+
+.email-contact-card > i {
+    font-size: 34px;
+    color: #174ea6;
+    margin-bottom: 15px;
+}
+
+.email-contact-card h4 {
+    color: #123f7a;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.email-contact-card a {
+    color: #174ea6;
+    text-decoration: none;
+    font-size: 14px;
+    word-break: break-word;
+}
+
+
+/* LOCATION */
+
+.contact-location {
+    padding: 70px 20px;
+    background: #f5f8fc;
+}
+
+.location-details {
+    background: #ffffff;
+    padding: 35px;
+    border-radius: 14px;
+    border: 1px solid #e1e7ef;
+    box-shadow: 0 5px 18px rgba(0,0,0,.05);
+}
+
+.location-detail-item {
+    display: flex;
+    gap: 18px;
+    margin-bottom: 25px;
+}
+
+.location-detail-item > i {
+    color: #174ea6;
+    font-size: 25px;
+}
+
+.location-detail-item h4 {
+    color: #123f7a;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.location-detail-item p {
+    color: #666;
+    line-height: 1.7;
+    margin: 0;
+}
+
+.contact-map {
+    background: #ffffff;
+    padding: 10px;
+    border-radius: 14px;
+    box-shadow: 0 8px 25px rgba(0,0,0,.08);
+}
+
+.contact-map img {
+    width: 100%;
+    display: block;
+    border-radius: 10px;
+}
+
+
+/* BRANCHES */
+
+.contact-branches {
+    padding: 70px 20px;
+    background: #ffffff;
+}
+
+.region-card {
+    height: 100%;
+    padding: 35px 30px;
+    background: #ffffff;
+    border: 1px solid #e1e7ef;
+    border-radius: 14px;
+    box-shadow: 0 5px 18px rgba(0,0,0,.05);
+    transition: .3s ease;
+}
+
+.region-card:hover {
+    transform: translateY(-7px);
+    border-color: #174ea6;
+    box-shadow: 0 12px 28px rgba(0,0,0,.10);
+}
+
+.region-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #eef5ff;
+    color: #174ea6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    margin-bottom: 15px;
+}
+
+.region-card h3 {
+    color: #123f7a;
+    font-weight: 800;
+}
+
+.region-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0 0;
+}
+
+.region-card li {
+    padding: 8px 0;
+    border-bottom: 1px solid #edf0f4;
+    color: #666;
+}
+
+.region-card li:last-child {
+    border-bottom: none;
+}
+
+
+/* INQUIRY */
+
+.contact-inquiry {
+    padding: 80px 20px;
+    background: #f5f8fc;
+}
+
+.inquiry-wrapper {
+    background: #ffffff;
+    padding: 45px;
+    border-radius: 15px;
+    border: 1px solid #e1e7ef;
+    box-shadow: 0 8px 30px rgba(0,0,0,.07);
+}
+
+.inquiry-wrapper .form-label {
+    color: #123f7a;
+    font-weight: 700;
+}
+
+.inquiry-wrapper .form-control {
+    border: 1px solid #d7dee8;
+    padding: 12px 14px;
+    border-radius: 7px;
+}
+
+.inquiry-wrapper .form-control:focus {
+    border-color: #174ea6;
+    box-shadow: 0 0 0 .2rem rgba(23,78,166,.12);
+}
+
+.inquiry-wrapper textarea {
+    resize: vertical;
+}
+
+
+/* CTA */
+
+.contact-cta {
+    padding: 70px 20px;
+    text-align: center;
+    background: #ffffff;
+}
+
+.contact-cta h2 {
+    color: #123f7a;
+    font-size: 32px;
+    font-weight: 800;
+}
+
+.contact-cta p {
+    color: #666;
+    margin-bottom: 25px;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 768px) {
+
+    .contact-hero {
+        padding: 45px 15px;
+    }
+
+    .contact-hero h1 {
+        font-size: 32px;
+    }
+
+    .contact-office,
+    .contact-email,
+    .contact-location,
+    .contact-branches,
+    .contact-inquiry {
+        padding: 50px 15px;
+    }
+
+    .contact-office h2,
+    .contact-email h2,
+    .contact-location h2,
+    .contact-branches h2,
+    .contact-inquiry h2,
+    .contact-cta h2 {
+        font-size: 27px;
+    }
+
+    .inquiry-wrapper {
+        padding: 25px 20px;
+    }
+
+    .location-details {
+        padding: 25px;
+    }
+
+}
