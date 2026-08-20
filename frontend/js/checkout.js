@@ -114,24 +114,16 @@ function loadCheckout() {
 function displayCheckoutItems(cart) {
 
     const checkoutContainer =
-        document.getElementById(
-            "checkoutItems"
-        );
-
+        document.getElementById("checkoutItems");
 
     if (!checkoutContainer) {
 
-        console.warn(
-            "checkoutItems element not found."
-        );
+        console.warn("checkoutItems element not found.");
 
         return;
-
     }
 
-
     checkoutContainer.innerHTML = "";
-
 
     // =====================================================
     // EMPTY CART
@@ -139,44 +131,20 @@ function displayCheckoutItems(cart) {
 
     if (cart.length === 0) {
 
-        checkoutContainer.innerHTML = `
-
-            <div class="text-center py-5">
-
-                <i
-                    class="bi bi-cart-x text-muted"
-                    style="font-size:3rem;"
-                ></i>
-
-                <h5 class="mt-3">
-                    Your cart is empty
-                </h5>
-
-                <p class="text-muted">
-                    Please add products before checkout.
-                </p>
-
-                <a
-                    href="products.html"
-                    class="btn btn-primary"
-                >
-
-                    <i class="bi bi-shop"></i>
-
-                    Continue Shopping
-
-                </a>
-
-            </div>
-
-        `;
+        checkoutContainer.innerHTML =
+            '<div class="text-center py-5">' +
+                '<i class="bi bi-cart-x text-muted" style="font-size:3rem;"></i>' +
+                '<h5 class="mt-3">Your cart is empty</h5>' +
+                '<p class="text-muted">Please add products before checkout.</p>' +
+                '<a href="products.html" class="btn btn-primary">' +
+                    '<i class="bi bi-shop"></i> Continue Shopping' +
+                '</a>' +
+            '</div>';
 
         updateCheckoutSummary([]);
 
         return;
-
     }
-
 
     // =====================================================
     // DISPLAY PRODUCTS
@@ -187,205 +155,284 @@ function displayCheckoutItems(cart) {
         const productName =
             product.name || "Product";
 
-
         const brand =
             product.brand
-                ? product.brand.toUpperCase()
+                ? String(product.brand).toUpperCase()
                 : "";
 
+        const category =
+            product.category || "";
 
         const price =
             Number(product.price) || 0;
 
-
         const quantity =
             Number(product.quantity) || 1;
 
-
         const image =
-            product.image ||
-            "images/logo/logo.jpg";
-
+            product.image || "images/logo/logo.jpg";
 
         const subtotal =
             price * quantity;
 
-
         const item =
             document.createElement("div");
-
 
         item.className =
             "checkout-item border-bottom pb-3 mb-3";
 
+        // =================================================
+        // PRODUCT ROW
+        // =================================================
 
-        item.innerHTML = `
+        const row =
+            document.createElement("div");
 
-            <div
-                class="d-flex align-items-center"
-            >
+        row.className =
+            "d-flex align-items-center";
 
+        // =================================================
+        // IMAGE
+        // =================================================
 
-                <!-- ================================= -->
-                <!-- PRODUCT IMAGE -->
-                <!-- ================================= -->
+        const img =
+            document.createElement("img");
 
-                <img
-                    src="${escapeHTML(image)}"
-                    alt="${escapeHTML(productName)}"
+        img.src = image;
 
-                    style="
-                        width:80px;
-                        height:80px;
-                        object-fit:contain;
-                        border:1px solid #eee;
-                        border-radius:8px;
-                        padding:5px;
-                        background:#fff;
-                    "
+        img.alt = productName;
 
-                    class="me-3"
+        img.className = "me-3";
 
-                    onerror="
-                        this.src='images/logo/logo.jpg';
-                    "
-                >
+        img.style.width = "80px";
+        img.style.height = "80px";
+        img.style.objectFit = "contain";
+        img.style.border = "1px solid #eee";
+        img.style.borderRadius = "8px";
+        img.style.padding = "5px";
+        img.style.background = "#fff";
 
+        img.onerror = function () {
 
-                <!-- ================================= -->
-                <!-- PRODUCT INFORMATION -->
-                <!-- ================================= -->
+            this.src = "images/logo/logo.jpg";
 
-                <div class="flex-grow-1">
+        };
 
+        row.appendChild(img);
 
-                    <h6 class="mb-1">
+        // =================================================
+        // PRODUCT INFORMATION
+        // =================================================
 
-                        ${escapeHTML(productName)}
+        const info =
+            document.createElement("div");
 
-                    </h6>
+        info.className =
+            "flex-grow-1";
 
+        // PRODUCT NAME
 
-                    ${
-                        brand
-                            ? `
-                                <div class="small text-muted mb-1">
-                                    ${escapeHTML(brand)}
-                                </div>
-                              `
-                            : ""
-                    }
+        const nameElement =
+            document.createElement("h6");
 
+        nameElement.className =
+            "mb-1";
 
-                    ${
-                        product.category
-                            ? `
-                                <span
-                                    class="badge bg-light text-primary mb-1"
-                                >
-                                    ${escapeHTML(product.category)}
-                                </span>
-                              `
-                            : ""
-                    }
+        nameElement.textContent =
+            productName;
 
+        info.appendChild(nameElement);
 
-                    <div class="small text-muted mt-1">
+        // BRAND
 
-                        ${formatCurrency(price)}
-                        ×
-                        ${quantity}
+        if (brand) {
 
-                    </div>
+            const brandElement =
+                document.createElement("div");
 
+            brandElement.className =
+                "small text-muted mb-1";
 
-                    <!-- ================================= -->
-                    <!-- QUANTITY CONTROLS -->
-                    <!-- ================================= -->
+            brandElement.textContent =
+                brand;
 
-                    <div
-                        class="d-flex align-items-center mt-2"
-                    >
+            info.appendChild(brandElement);
 
+        }
 
-                        <button
-                            type="button"
-                            class="btn btn-sm btn-outline-secondary"
-                            onclick="decreaseCheckoutQuantity(${index})"
-                        >
+        // CATEGORY
 
-                            −
+        if (category) {
 
-                        </button>
+            const categoryElement =
+                document.createElement("span");
 
+            categoryElement.className =
+                "badge bg-light text-primary mb-1";
 
-                        <span
-                            class="mx-3 fw-bold"
-                            style="min-width:20px;text-align:center;"
-                        >
+            categoryElement.textContent =
+                category;
 
-                            ${quantity}
+            info.appendChild(categoryElement);
 
-                        </span>
+        }
 
+        // PRICE × QUANTITY
 
-                        <button
-                            type="button"
-                            class="btn btn-sm btn-outline-secondary"
-                            onclick="increaseCheckoutQuantity(${index})"
-                        >
+        const priceElement =
+            document.createElement("div");
 
-                            +
+        priceElement.className =
+            "small text-muted mt-1";
 
-                        </button>
+        priceElement.textContent =
+            formatCurrency(price) +
+            " × " +
+            quantity;
 
+        info.appendChild(priceElement);
 
-                        <!-- REMOVE BUTTON -->
+        // =================================================
+        // QUANTITY CONTROLS
+        // =================================================
 
-                        <button
-                            type="button"
-                            class="btn btn-sm btn-outline-danger ms-3"
-                            onclick="removeCheckoutItem(${index})"
-                            title="Remove product"
-                        >
+        const controls =
+            document.createElement("div");
 
-                            <i class="bi bi-trash"></i>
+        controls.className =
+            "d-flex align-items-center mt-2";
 
-                        </button>
+        // DECREASE
 
+        const decreaseButton =
+            document.createElement("button");
 
-                    </div>
+        decreaseButton.type =
+            "button";
 
+        decreaseButton.className =
+            "btn btn-sm btn-outline-secondary";
 
-                </div>
+        decreaseButton.textContent =
+            "−";
 
+        decreaseButton.addEventListener(
+            "click",
+            function () {
 
-                <!-- ================================= -->
-                <!-- SUBTOTAL -->
-                <!-- ================================= -->
+                decreaseCheckoutQuantity(index);
 
-                <div
-                    class="text-end ms-3"
-                    style="min-width:100px;"
-                >
+            }
+        );
 
-                    <strong>
+        controls.appendChild(decreaseButton);
 
-                        ${
-                            price > 0
-                                ? formatCurrency(subtotal)
-                                : "Contact for Price"
-                        }
+        // QUANTITY
 
-                    </strong>
+        const quantityElement =
+            document.createElement("span");
 
-                </div>
+        quantityElement.className =
+            "mx-3 fw-bold";
 
+        quantityElement.style.minWidth =
+            "20px";
 
-            </div>
+        quantityElement.style.textAlign =
+            "center";
 
-        `;
+        quantityElement.textContent =
+            quantity;
 
+        controls.appendChild(quantityElement);
+
+        // INCREASE
+
+        const increaseButton =
+            document.createElement("button");
+
+        increaseButton.type =
+            "button";
+
+        increaseButton.className =
+            "btn btn-sm btn-outline-secondary";
+
+        increaseButton.textContent =
+            "+";
+
+        increaseButton.addEventListener(
+            "click",
+            function () {
+
+                increaseCheckoutQuantity(index);
+
+            }
+        );
+
+        controls.appendChild(increaseButton);
+
+        // REMOVE
+
+        const removeButton =
+            document.createElement("button");
+
+        removeButton.type =
+            "button";
+
+        removeButton.className =
+            "btn btn-sm btn-outline-danger ms-3";
+
+        removeButton.title =
+            "Remove product";
+
+        removeButton.innerHTML =
+            '<i class="bi bi-trash"></i>';
+
+        removeButton.addEventListener(
+            "click",
+            function () {
+
+                removeCheckoutItem(index);
+
+            }
+        );
+
+        controls.appendChild(removeButton);
+
+        info.appendChild(controls);
+
+        row.appendChild(info);
+
+        // =================================================
+        // SUBTOTAL
+        // =================================================
+
+        const subtotalElement =
+            document.createElement("div");
+
+        subtotalElement.className =
+            "text-end ms-3";
+
+        subtotalElement.style.minWidth =
+            "100px";
+
+        const subtotalStrong =
+            document.createElement("strong");
+
+        subtotalStrong.textContent =
+            price > 0
+                ? formatCurrency(subtotal)
+                : "Contact for Price";
+
+        subtotalElement.appendChild(
+            subtotalStrong
+        );
+
+        row.appendChild(
+            subtotalElement
+        );
+
+        item.appendChild(row);
 
         checkoutContainer.appendChild(item);
 
