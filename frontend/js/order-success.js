@@ -1,27 +1,33 @@
 ```javascript
 // =========================================================
-// RVA CORPORATION - ORDER SUCCESS
-// =========================================================
-// Displays the latest successfully placed order
+// RVA CORPORATION
+// ORDER SUCCESS / RECEIPT
 // =========================================================
 
 document.addEventListener("DOMContentLoaded", function () {
 
     console.log("RVA Order Success initialized.");
 
-    loadOrderConfirmation();
+    loadLatestOrder();
 
 });
 
 
 // =========================================================
-// LOAD ORDER
+// LOAD LATEST ORDER
 // =========================================================
 
-function loadOrderConfirmation() {
+function loadLatestOrder() {
 
     const savedOrder =
         localStorage.getItem("latestOrder");
+
+
+    console.log(
+        "Latest order from localStorage:",
+        savedOrder
+    );
+
 
     if (!savedOrder) {
 
@@ -29,13 +35,13 @@ function loadOrderConfirmation() {
             "No latestOrder found in localStorage."
         );
 
-        showNoOrderMessage();
-
         return;
+
     }
 
 
     let order;
+
 
     try {
 
@@ -45,32 +51,23 @@ function loadOrderConfirmation() {
     } catch (error) {
 
         console.error(
-            "Could not read latestOrder:",
+            "Could not parse latestOrder:",
             error
         );
 
-        showNoOrderMessage();
-
         return;
-    }
 
-
-    if (!order) {
-
-        showNoOrderMessage();
-
-        return;
     }
 
 
     console.log(
-        "RVA latest order:",
+        "Parsed RVA order:",
         order
     );
 
 
     // =====================================================
-    // CUSTOMER INFORMATION
+    // ORDER NUMBER
     // =====================================================
 
     setText(
@@ -79,33 +76,45 @@ function loadOrderConfirmation() {
     );
 
 
+    // =====================================================
+    // CUSTOMER INFORMATION
+    // =====================================================
+
+    const customer =
+        order.customer || {};
+
+
     setText(
         "customerName",
-        order.customer?.fullName || "-"
+        customer.fullName || "-"
     );
 
 
     setText(
         "customerPhone",
-        order.customer?.phone || "-"
+        customer.phone || "-"
     );
 
 
     setText(
         "customerEmail",
-        order.customer?.email || "-"
-    );
-
-
-    setText(
-        "orderType",
-        order.orderType || "-"
+        customer.email || "-"
     );
 
 
     setText(
         "customerAddress",
-        order.customer?.address || "-"
+        customer.address || "-"
+    );
+
+
+    // =====================================================
+    // ORDER INFORMATION
+    // =====================================================
+
+    setText(
+        "orderType",
+        order.orderType || "-"
     );
 
 
@@ -116,33 +125,38 @@ function loadOrderConfirmation() {
 
 
     // =====================================================
-    // STATUS
+    // ORDER STATUS
     // =====================================================
 
+    const status =
+        order.status || "Pending";
+
+
     const statusElement =
-        document.getElementById("orderStatus");
+        document.getElementById(
+            "orderStatus"
+        );
 
 
     if (statusElement) {
 
-        const status =
-            order.status || "Pending";
-
         statusElement.textContent =
             status;
 
+
         statusElement.className =
-            "badge " + getStatusClass(status);
+            "badge " +
+            getStatusClass(status);
 
     }
 
 
     // =====================================================
-    // PRODUCTS
+    // ORDER ITEMS
     // =====================================================
 
     displayOrderItems(
-        order.items
+        order.items || []
     );
 
 
@@ -152,7 +166,7 @@ function loadOrderConfirmation() {
 
     setText(
         "totalItems",
-        Number(order.itemCount) || 0
+        order.itemCount || 0
     );
 
 
@@ -175,7 +189,7 @@ function loadOrderConfirmation() {
 
 
     // =====================================================
-    // NOTES
+    // ORDER NOTES
     // =====================================================
 
     const notesContainer =
@@ -208,7 +222,7 @@ function loadOrderConfirmation() {
 
 
 // =========================================================
-// DISPLAY ORDER ITEMS
+// DISPLAY PRODUCTS
 // =========================================================
 
 function displayOrderItems(items) {
@@ -220,37 +234,23 @@ function displayOrderItems(items) {
 
 
     if (!container) {
+
+        console.error(
+            "orderItems element not found."
+        );
+
         return;
+
     }
 
 
     container.innerHTML = "";
 
 
-    if (typeof items === "string") {
-
-        try {
-
-            items =
-                JSON.parse(items);
-
-        } catch (error) {
-
-            items = [];
-
-        }
-
-    }
-
-
-    if (!Array.isArray(items)) {
-
-        items = [];
-
-    }
-
-
-    if (items.length === 0) {
+    if (
+        !Array.isArray(items) ||
+        items.length === 0
+    ) {
 
         container.innerHTML = `
 
@@ -270,6 +270,7 @@ function displayOrderItems(items) {
         `;
 
         return;
+
     }
 
 
@@ -278,14 +279,18 @@ function displayOrderItems(items) {
         const name =
             item.name || "Product";
 
+
         const brand =
-            item.brand || "";
+            item.brand || "-";
+
 
         const quantity =
             Number(item.quantity) || 1;
 
+
         const price =
             Number(item.price) || 0;
+
 
         const subtotal =
             price * quantity;
@@ -323,58 +328,6 @@ function displayOrderItems(items) {
         container.appendChild(row);
 
     });
-
-}
-
-
-// =========================================================
-// NO ORDER MESSAGE
-// =========================================================
-
-function showNoOrderMessage() {
-
-    const container =
-        document.getElementById(
-            "orderConfirmation"
-        );
-
-
-    if (!container) {
-        return;
-    }
-
-
-    container.innerHTML = `
-
-        <div class="card-body p-5 text-center">
-
-            <i
-                class="bi bi-receipt text-muted"
-                style="font-size:4rem;"
-            ></i>
-
-            <h2 class="mt-3">
-                No Order Found
-            </h2>
-
-            <p class="text-muted">
-                There is no recent order available to display.
-            </p>
-
-            <a
-                href="products.html"
-                class="btn btn-primary"
-            >
-
-                <i class="bi bi-shop"></i>
-
-                Continue Shopping
-
-            </a>
-
-        </div>
-
-    `;
 
 }
 
@@ -427,6 +380,13 @@ function setText(
 
         element.textContent =
             value;
+
+    } else {
+
+        console.error(
+            "Element not found:",
+            elementId
+        );
 
     }
 
