@@ -1452,8 +1452,5 @@ window.processOrder =
 
 
 
-Change it to:
-
-```javascript
 window.updateCartCount =
     updateCartCount;
