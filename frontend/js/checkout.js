@@ -1360,11 +1360,11 @@ try {
 
 
     // =====================================================
-    // RETURN HOME
-    // =====================================================
+// GO TO ORDER CONFIRMATION
+// =====================================================
 
-    window.location.href =
-        "index.html";
+window.location.href =
+    "order-success.html";
 
 }
 
