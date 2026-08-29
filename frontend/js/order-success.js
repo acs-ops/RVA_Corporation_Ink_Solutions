@@ -1,23 +1,22 @@
-```javascript
 document.addEventListener("DOMContentLoaded", function () {
 
     console.log("ORDER SUCCESS PAGE LOADED");
 
-    const saved = localStorage.getItem("latestOrder");
+    var savedOrder = localStorage.getItem("latestOrder");
 
-    console.log("LATEST ORDER:", saved);
+    console.log("LATEST ORDER:", savedOrder);
 
-    if (!saved) {
+    if (!savedOrder) {
         console.error("No latestOrder found.");
         return;
     }
 
-    let order;
+    var order;
 
     try {
-        order = JSON.parse(saved);
+        order = JSON.parse(savedOrder);
     } catch (error) {
-        console.error("Could not read latestOrder:", error);
+        console.error("Could not parse latestOrder:", error);
         return;
     }
 
@@ -29,18 +28,21 @@ document.addEventListener("DOMContentLoaded", function () {
         order.orderNumber || "-";
 
 
-    // CUSTOMER
-    document.getElementById("customerName").textContent =
-        order.customer?.fullName || "-";
+    // CUSTOMER INFORMATION
+    if (order.customer) {
 
-    document.getElementById("customerPhone").textContent =
-        order.customer?.phone || "-";
+        document.getElementById("customerName").textContent =
+            order.customer.fullName || "-";
 
-    document.getElementById("customerEmail").textContent =
-        order.customer?.email || "-";
+        document.getElementById("customerPhone").textContent =
+            order.customer.phone || "-";
 
-    document.getElementById("customerAddress").textContent =
-        order.customer?.address || "-";
+        document.getElementById("customerEmail").textContent =
+            order.customer.email || "-";
+
+        document.getElementById("customerAddress").textContent =
+            order.customer.address || "-";
+    }
 
 
     // ORDER INFORMATION
@@ -52,65 +54,83 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     // STATUS
-    const statusElement =
+    var statusElement =
         document.getElementById("orderStatus");
 
-    statusElement.textContent =
-        order.status || "Pending";
+    if (statusElement) {
+        statusElement.textContent =
+            order.status || "Pending";
+    }
 
 
     // PRODUCTS
-    const itemsContainer =
+    var itemsContainer =
         document.getElementById("orderItems");
 
-    itemsContainer.innerHTML = "";
+    if (itemsContainer) {
 
+        itemsContainer.innerHTML = "";
 
-    if (Array.isArray(order.items)) {
+        if (Array.isArray(order.items)) {
 
-        order.items.forEach(function (item) {
+            order.items.forEach(function (item) {
 
-            const quantity =
-                Number(item.quantity) || 1;
+                var quantity =
+                    Number(item.quantity) || 1;
 
-            const price =
-                Number(item.price) || 0;
+                var price =
+                    Number(item.price) || 0;
 
-            const itemSubtotal =
-                quantity * price;
+                var itemSubtotal =
+                    quantity * price;
 
+                var row =
+                    document.createElement("tr");
 
-            const row =
-                document.createElement("tr");
+                var productCell =
+                    document.createElement("td");
 
+                productCell.textContent =
+                    item.name || "Product";
 
-            row.innerHTML = `
-                <td>${item.name || "Product"}</td>
+                var brandCell =
+                    document.createElement("td");
 
-                <td>${item.brand || "-"}</td>
+                brandCell.textContent =
+                    item.brand || "-";
 
-                <td class="text-center">
-                    ${quantity}
-                </td>
+                var quantityCell =
+                    document.createElement("td");
 
-                <td>
-                    ₱${price.toLocaleString("en-PH", {
-                        minimumFractionDigits: 2
-                    })}
-                </td>
+                quantityCell.className =
+                    "text-center";
 
-                <td>
-                    ₱${itemSubtotal.toLocaleString("en-PH", {
-                        minimumFractionDigits: 2
-                    })}
-                </td>
-            `;
+                quantityCell.textContent =
+                    quantity;
 
+                var priceCell =
+                    document.createElement("td");
 
-            itemsContainer.appendChild(row);
+                priceCell.textContent =
+                    formatMoney(price);
 
-        });
+                var subtotalCell =
+                    document.createElement("td");
 
+                subtotalCell.textContent =
+                    formatMoney(itemSubtotal);
+
+                row.appendChild(productCell);
+                row.appendChild(brandCell);
+                row.appendChild(quantityCell);
+                row.appendChild(priceCell);
+                row.appendChild(subtotalCell);
+
+                itemsContainer.appendChild(row);
+
+            });
+
+        }
     }
 
 
@@ -118,32 +138,33 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("totalItems").textContent =
         order.itemCount || 0;
 
-
     document.getElementById("subtotal").textContent =
         formatMoney(order.subtotal);
 
-
     document.getElementById("deliveryFee").textContent =
         formatMoney(order.deliveryFee);
-
 
     document.getElementById("total").textContent =
         formatMoney(order.total);
 
 
-    // NOTES
+    // ORDER NOTES
     if (order.orderNotes) {
 
-        document.getElementById(
-            "orderNotesContainer"
-        ).style.display = "block";
+        var notesContainer =
+            document.getElementById("orderNotesContainer");
 
+        var notesElement =
+            document.getElementById("orderNotes");
 
-        document.getElementById(
-            "orderNotes"
-        ).textContent =
-            order.orderNotes;
+        if (notesContainer && notesElement) {
 
+            notesElement.textContent =
+                order.orderNotes;
+
+            notesContainer.style.display =
+                "block";
+        }
     }
 
 });
@@ -161,4 +182,3 @@ function formatMoney(value) {
         );
 
 }
-```
