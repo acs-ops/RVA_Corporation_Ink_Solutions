@@ -2,7 +2,7 @@
 // =========================================================
 // RVA CORPORATION - ORDER SUCCESS
 // =========================================================
-// Displays the customer's completed order confirmation
+// Displays the latest successfully placed order
 // =========================================================
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 // =========================================================
-// LOAD LATEST ORDER
+// LOAD ORDER
 // =========================================================
 
 function loadOrderConfirmation() {
@@ -23,20 +23,19 @@ function loadOrderConfirmation() {
     const savedOrder =
         localStorage.getItem("latestOrder");
 
-
     if (!savedOrder) {
 
-        console.warn("No latest order found.");
+        console.error(
+            "No latestOrder found in localStorage."
+        );
 
-        showNoOrder();
+        showNoOrderMessage();
 
         return;
-
     }
 
 
     let order;
-
 
     try {
 
@@ -46,14 +45,21 @@ function loadOrderConfirmation() {
     } catch (error) {
 
         console.error(
-            "Unable to read latest order:",
+            "Could not read latestOrder:",
             error
         );
 
-        showNoOrder();
+        showNoOrderMessage();
 
         return;
+    }
 
+
+    if (!order) {
+
+        showNoOrderMessage();
+
+        return;
     }
 
 
@@ -63,20 +69,9 @@ function loadOrderConfirmation() {
     );
 
 
-    displayOrder(order);
-
-}
-
-
-// =========================================================
-// DISPLAY ORDER
-// =========================================================
-
-function displayOrder(order) {
-
-    // -----------------------------------------------------
-    // ORDER NUMBER
-    // -----------------------------------------------------
+    // =====================================================
+    // CUSTOMER INFORMATION
+    // =====================================================
 
     setText(
         "orderNumber",
@@ -84,45 +79,33 @@ function displayOrder(order) {
     );
 
 
-    // -----------------------------------------------------
-    // CUSTOMER INFORMATION
-    // -----------------------------------------------------
-
-    const customer =
-        order.customer || {};
-
-
     setText(
         "customerName",
-        customer.fullName || "-"
-    );
-
-
-    setText(
-        "customerEmail",
-        customer.email || "-"
+        order.customer?.fullName || "-"
     );
 
 
     setText(
         "customerPhone",
-        customer.phone || "-"
+        order.customer?.phone || "-"
+    );
+
+
+    setText(
+        "customerEmail",
+        order.customer?.email || "-"
+    );
+
+
+    setText(
+        "orderType",
+        order.orderType || "-"
     );
 
 
     setText(
         "customerAddress",
-        customer.address || "-"
-    );
-
-
-    // -----------------------------------------------------
-    // ORDER INFORMATION
-    // -----------------------------------------------------
-
-    setText(
-        "orderType",
-        order.orderType || "-"
+        order.customer?.address || "-"
     );
 
 
@@ -132,14 +115,12 @@ function displayOrder(order) {
     );
 
 
-    // -----------------------------------------------------
-    // ORDER STATUS
-    // -----------------------------------------------------
+    // =====================================================
+    // STATUS
+    // =====================================================
 
     const statusElement =
-        document.getElementById(
-            "orderStatus"
-        );
+        document.getElementById("orderStatus");
 
 
     if (statusElement) {
@@ -147,84 +128,27 @@ function displayOrder(order) {
         const status =
             order.status || "Pending";
 
-
         statusElement.textContent =
             status;
 
-
-        // Reset classes
-
         statusElement.className =
-            "badge";
-
-
-        // Status colors
-
-        if (status === "Pending") {
-
-            statusElement.classList.add(
-                "bg-warning",
-                "text-dark"
-            );
-
-        }
-
-        else if (status === "Confirmed") {
-
-            statusElement.classList.add(
-                "bg-primary"
-            );
-
-        }
-
-        else if (status === "Processing") {
-
-            statusElement.classList.add(
-                "bg-info",
-                "text-dark"
-            );
-
-        }
-
-        else if (status === "Completed") {
-
-            statusElement.classList.add(
-                "bg-success"
-            );
-
-        }
-
-        else if (status === "Cancelled") {
-
-            statusElement.classList.add(
-                "bg-danger"
-            );
-
-        }
-
-        else {
-
-            statusElement.classList.add(
-                "bg-secondary"
-            );
-
-        }
+            "badge " + getStatusClass(status);
 
     }
 
 
-    // -----------------------------------------------------
-    // ORDER ITEMS
-    // -----------------------------------------------------
+    // =====================================================
+    // PRODUCTS
+    // =====================================================
 
     displayOrderItems(
-        order.items || []
+        order.items
     );
 
 
-    // -----------------------------------------------------
-    // ORDER SUMMARY
-    // -----------------------------------------------------
+    // =====================================================
+    // TOTALS
+    // =====================================================
 
     setText(
         "totalItems",
@@ -250,9 +174,9 @@ function displayOrder(order) {
     );
 
 
-    // -----------------------------------------------------
-    // ORDER NOTES
-    // -----------------------------------------------------
+    // =====================================================
+    // NOTES
+    // =====================================================
 
     const notesContainer =
         document.getElementById(
@@ -267,42 +191,18 @@ function displayOrder(order) {
 
 
     if (
+        order.orderNotes &&
         notesContainer &&
         notesElement
     ) {
 
-        if (order.orderNotes) {
+        notesElement.textContent =
+            order.orderNotes;
 
-            notesElement.textContent =
-                order.orderNotes;
-
-
-            notesContainer.style.display =
-                "block";
-
-        }
-
-        else {
-
-            notesContainer.style.display =
-                "none";
-
-        }
+        notesContainer.style.display =
+            "block";
 
     }
-
-
-    // -----------------------------------------------------
-    // ORDER DATE
-    // -----------------------------------------------------
-
-    // Your current HTML does not have a date field,
-    // so we don't need to display it here.
-
-
-    console.log(
-        "RVA order confirmation displayed."
-    );
 
 }
 
@@ -320,23 +220,37 @@ function displayOrderItems(items) {
 
 
     if (!container) {
-
-        console.error(
-            "orderItems element not found."
-        );
-
         return;
-
     }
 
 
     container.innerHTML = "";
 
 
-    if (
-        !Array.isArray(items) ||
-        items.length === 0
-    ) {
+    if (typeof items === "string") {
+
+        try {
+
+            items =
+                JSON.parse(items);
+
+        } catch (error) {
+
+            items = [];
+
+        }
+
+    }
+
+
+    if (!Array.isArray(items)) {
+
+        items = [];
+
+    }
+
+
+    if (items.length === 0) {
 
         container.innerHTML = `
 
@@ -344,7 +258,7 @@ function displayOrderItems(items) {
 
                 <td
                     colspan="5"
-                    class="text-center text-muted py-4"
+                    class="text-center text-muted"
                 >
 
                     No product details available.
@@ -356,29 +270,24 @@ function displayOrderItems(items) {
         `;
 
         return;
-
     }
 
 
     items.forEach(function (item) {
 
-        const productName =
+        const name =
             item.name || "Product";
 
-
         const brand =
-            item.brand || "-";
-
-
-        const price =
-            Number(item.price) || 0;
-
+            item.brand || "";
 
         const quantity =
             Number(item.quantity) || 1;
 
+        const price =
+            Number(item.price) || 0;
 
-        const itemSubtotal =
+        const subtotal =
             price * quantity;
 
 
@@ -386,120 +295,32 @@ function displayOrderItems(items) {
             document.createElement("tr");
 
 
-        // -------------------------------------------------
-        // PRODUCT
-        // -------------------------------------------------
+        row.innerHTML = `
 
-        const productCell =
-            document.createElement("td");
+            <td>
+                ${escapeHTML(name)}
+            </td>
 
+            <td>
+                ${escapeHTML(brand)}
+            </td>
 
-        const productStrong =
-            document.createElement("strong");
+            <td class="text-center">
+                ${quantity}
+            </td>
 
+            <td>
+                ${formatCurrency(price)}
+            </td>
 
-        productStrong.textContent =
-            productName;
+            <td>
+                ${formatCurrency(subtotal)}
+            </td>
 
-
-        productCell.appendChild(
-            productStrong
-        );
-
-
-        // -------------------------------------------------
-        // BRAND
-        // -------------------------------------------------
-
-        const brandCell =
-            document.createElement("td");
+        `;
 
 
-        brandCell.textContent =
-            brand;
-
-
-        // -------------------------------------------------
-        // QUANTITY
-        // -------------------------------------------------
-
-        const quantityCell =
-            document.createElement("td");
-
-
-        quantityCell.className =
-            "text-center";
-
-
-        quantityCell.textContent =
-            quantity;
-
-
-        // -------------------------------------------------
-        // PRICE
-        // -------------------------------------------------
-
-        const priceCell =
-            document.createElement("td");
-
-
-        priceCell.textContent =
-            formatCurrency(price);
-
-
-        // -------------------------------------------------
-        // SUBTOTAL
-        // -------------------------------------------------
-
-        const subtotalCell =
-            document.createElement("td");
-
-
-        const subtotalStrong =
-            document.createElement("strong");
-
-
-        subtotalStrong.textContent =
-            formatCurrency(itemSubtotal);
-
-
-        subtotalCell.appendChild(
-            subtotalStrong
-        );
-
-
-        // -------------------------------------------------
-        // ADD CELLS
-        // -------------------------------------------------
-
-        row.appendChild(
-            productCell
-        );
-
-
-        row.appendChild(
-            brandCell
-        );
-
-
-        row.appendChild(
-            quantityCell
-        );
-
-
-        row.appendChild(
-            priceCell
-        );
-
-
-        row.appendChild(
-            subtotalCell
-        );
-
-
-        container.appendChild(
-            row
-        );
+        container.appendChild(row);
 
     });
 
@@ -507,62 +328,80 @@ function displayOrderItems(items) {
 
 
 // =========================================================
-// NO ORDER
+// NO ORDER MESSAGE
 // =========================================================
 
-function showNoOrder() {
+function showNoOrderMessage() {
 
-    const orderConfirmation =
+    const container =
         document.getElementById(
             "orderConfirmation"
         );
 
 
-    if (orderConfirmation) {
-
-        orderConfirmation.innerHTML = `
-
-            <div class="card-body p-5 text-center">
-
-                <div
-                    class="text-warning"
-                    style="font-size:4rem;"
-                >
-
-                    <i class="bi bi-receipt"></i>
-
-                </div>
+    if (!container) {
+        return;
+    }
 
 
-                <h2 class="mt-3">
+    container.innerHTML = `
 
-                    No Order Found
+        <div class="card-body p-5 text-center">
 
-                </h2>
+            <i
+                class="bi bi-receipt text-muted"
+                style="font-size:4rem;"
+            ></i>
+
+            <h2 class="mt-3">
+                No Order Found
+            </h2>
+
+            <p class="text-muted">
+                There is no recent order available to display.
+            </p>
+
+            <a
+                href="products.html"
+                class="btn btn-primary"
+            >
+
+                <i class="bi bi-shop"></i>
+
+                Continue Shopping
+
+            </a>
+
+        </div>
+
+    `;
+
+}
 
 
-                <p class="text-muted">
+// =========================================================
+// STATUS CLASS
+// =========================================================
 
-                    We could not find a recent order
-                    to display.
+function getStatusClass(status) {
 
-                </p>
+    switch (status) {
 
+        case "Confirmed":
+            return "bg-primary";
 
-                <a
-                    href="products.html"
-                    class="btn btn-primary mt-3"
-                >
+        case "Processing":
+            return "bg-info text-dark";
 
-                    <i class="bi bi-shop"></i>
+        case "Completed":
+            return "bg-success";
 
-                    Continue Shopping
+        case "Cancelled":
+            return "bg-danger";
 
-                </a>
-
-            </div>
-
-        `;
+        case "Pending":
+        default:
+            return "bg-warning text-dark";
 
     }
 
@@ -620,9 +459,22 @@ function formatCurrency(amount) {
 
 
 // =========================================================
-// GLOBAL
+// ESCAPE HTML
 // =========================================================
 
-window.loadOrderConfirmation =
-    loadOrderConfirmation;
+function escapeHTML(value) {
+
+    const div =
+        document.createElement(
+            "div"
+        );
+
+
+    div.textContent =
+        value ?? "";
+
+
+    return div.innerHTML;
+
+}
 ```
