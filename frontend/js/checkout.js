@@ -875,7 +875,7 @@ function setupCheckoutForm() {
 // PROCESS ORDER
 // =========================================================
 
-function processOrder() {
+async function processOrder() {
 
     const cart =
         getCart();
@@ -1181,6 +1181,79 @@ function processOrder() {
         "latestOrder",
         JSON.stringify(order)
     );
+    
+// =====================================================
+// SAVE ORDER TO SUPABASE
+// =====================================================
+
+try {
+
+    console.log(
+        "Saving RVA order to Supabase..."
+    );
+
+    const { data: savedOrder, error: supabaseError } =
+        await supabaseClient
+            .from("orders")
+            .insert({
+                order_number: order.orderNumber,
+                full_name: order.customer.fullName,
+                email: order.customer.email,
+                phone: order.customer.phone,
+                order_type: order.orderType,
+                address: order.customer.address,
+                payment_method: order.paymentMethod,
+                order_notes: order.orderNotes,
+                items: order.items,
+                total_items: order.itemCount,
+                subtotal: order.subtotal,
+                delivery_fee: order.deliveryFee,
+                total: order.total,
+                status: order.status
+            })
+            .select();
+
+    // =================================================
+    // CHECK SUPABASE RESULT
+    // =================================================
+
+    if (supabaseError) {
+
+        console.error(
+            "Supabase order save failed:",
+            supabaseError
+        );
+
+        alert(
+            "Order could not be saved to the database.\n\n" +
+            "Please try again.\n\n" +
+            "Error: " +
+            supabaseError.message
+        );
+
+        return;
+    }
+
+    console.log(
+        "RVA ORDER SAVED TO SUPABASE:",
+        savedOrder
+    );
+
+} catch (error) {
+
+    console.error(
+        "Supabase connection error:",
+        error
+    );
+
+    alert(
+        "There was a problem connecting to the order database.\n\n" +
+        "Please try again."
+    );
+
+    return;
+}
+
 
 
     // =====================================================
