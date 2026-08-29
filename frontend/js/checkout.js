@@ -1,4 +1,4 @@
-```javascript
+
 // =========================================================
 // RVA CORPORATION - CHECKOUT.JS
 // =========================================================
@@ -1451,6 +1451,9 @@ window.processOrder =
     processOrder;
 
 
+
+Change it to:
+
+```javascript
 window.updateCartCount =
     updateCartCount;
-```
