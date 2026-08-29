@@ -23,7 +23,10 @@ function loadOrderConfirmation() {
     const savedOrder =
         localStorage.getItem("latestOrder");
 
+
     if (!savedOrder) {
+
+        console.warn("No latest order found.");
 
         showNoOrder();
 
@@ -33,6 +36,7 @@ function loadOrderConfirmation() {
 
 
     let order;
+
 
     try {
 
@@ -53,6 +57,12 @@ function loadOrderConfirmation() {
     }
 
 
+    console.log(
+        "RVA latest order:",
+        order
+    );
+
+
     displayOrder(order);
 
 }
@@ -69,38 +79,41 @@ function displayOrder(order) {
     // -----------------------------------------------------
 
     setText(
-        "successOrderNumber",
+        "orderNumber",
         order.orderNumber || "-"
     );
 
 
     // -----------------------------------------------------
-    // CUSTOMER
+    // CUSTOMER INFORMATION
     // -----------------------------------------------------
 
-    if (order.customer) {
+    const customer =
+        order.customer || {};
 
-        setText(
-            "successCustomerName",
-            order.customer.fullName || "-"
-        );
 
-        setText(
-            "successCustomerEmail",
-            order.customer.email || "-"
-        );
+    setText(
+        "customerName",
+        customer.fullName || "-"
+    );
 
-        setText(
-            "successCustomerPhone",
-            order.customer.phone || "-"
-        );
 
-        setText(
-            "successCustomerAddress",
-            order.customer.address || "-"
-        );
+    setText(
+        "customerEmail",
+        customer.email || "-"
+    );
 
-    }
+
+    setText(
+        "customerPhone",
+        customer.phone || "-"
+    );
+
+
+    setText(
+        "customerAddress",
+        customer.address || "-"
+    );
 
 
     // -----------------------------------------------------
@@ -108,39 +121,100 @@ function displayOrder(order) {
     // -----------------------------------------------------
 
     setText(
-        "successOrderType",
+        "orderType",
         order.orderType || "-"
     );
 
 
     setText(
-        "successPaymentMethod",
+        "paymentMethod",
         order.paymentMethod || "-"
     );
 
 
-    setText(
-        "successStatus",
-        order.status || "Pending"
-    );
-
-
     // -----------------------------------------------------
-    // DATE
+    // ORDER STATUS
     // -----------------------------------------------------
 
-    if (order.orderDate) {
-
-        setText(
-            "successOrderDate",
-            formatDate(order.orderDate)
+    const statusElement =
+        document.getElementById(
+            "orderStatus"
         );
+
+
+    if (statusElement) {
+
+        const status =
+            order.status || "Pending";
+
+
+        statusElement.textContent =
+            status;
+
+
+        // Reset classes
+
+        statusElement.className =
+            "badge";
+
+
+        // Status colors
+
+        if (status === "Pending") {
+
+            statusElement.classList.add(
+                "bg-warning",
+                "text-dark"
+            );
+
+        }
+
+        else if (status === "Confirmed") {
+
+            statusElement.classList.add(
+                "bg-primary"
+            );
+
+        }
+
+        else if (status === "Processing") {
+
+            statusElement.classList.add(
+                "bg-info",
+                "text-dark"
+            );
+
+        }
+
+        else if (status === "Completed") {
+
+            statusElement.classList.add(
+                "bg-success"
+            );
+
+        }
+
+        else if (status === "Cancelled") {
+
+            statusElement.classList.add(
+                "bg-danger"
+            );
+
+        }
+
+        else {
+
+            statusElement.classList.add(
+                "bg-secondary"
+            );
+
+        }
 
     }
 
 
     // -----------------------------------------------------
-    // PRODUCTS
+    // ORDER ITEMS
     // -----------------------------------------------------
 
     displayOrderItems(
@@ -149,80 +223,86 @@ function displayOrder(order) {
 
 
     // -----------------------------------------------------
-    // SUMMARY
+    // ORDER SUMMARY
     // -----------------------------------------------------
 
     setText(
-        "successItemCount",
+        "totalItems",
         Number(order.itemCount) || 0
     );
 
 
     setText(
-        "successSubtotal",
+        "subtotal",
         formatCurrency(order.subtotal)
     );
 
 
     setText(
-        "successDeliveryFee",
+        "deliveryFee",
         formatCurrency(order.deliveryFee)
     );
 
 
     setText(
-        "successTotal",
+        "total",
         formatCurrency(order.total)
     );
 
 
     // -----------------------------------------------------
-    // NOTES
+    // ORDER NOTES
     // -----------------------------------------------------
 
     const notesContainer =
         document.getElementById(
-            "successOrderNotesContainer"
+            "orderNotesContainer"
         );
 
 
     const notesElement =
         document.getElementById(
-            "successOrderNotes"
+            "orderNotes"
         );
 
 
     if (
         notesContainer &&
-        notesElement &&
-        order.orderNotes
+        notesElement
     ) {
 
-        notesElement.textContent =
-            order.orderNotes;
+        if (order.orderNotes) {
 
-        notesContainer.style.display =
-            "block";
+            notesElement.textContent =
+                order.orderNotes;
+
+
+            notesContainer.style.display =
+                "block";
+
+        }
+
+        else {
+
+            notesContainer.style.display =
+                "none";
+
+        }
 
     }
 
 
     // -----------------------------------------------------
-    // SHOW ORDER
+    // ORDER DATE
     // -----------------------------------------------------
 
-    const orderContainer =
-        document.getElementById(
-            "orderConfirmation"
-        );
+    // Your current HTML does not have a date field,
+    // so we don't need to display it here.
 
 
-    if (orderContainer) {
-
-        orderContainer.style.display =
-            "block";
-
-    }
+    console.log(
+        "RVA order confirmation displayed."
+    );
 
 }
 
@@ -235,11 +315,15 @@ function displayOrderItems(items) {
 
     const container =
         document.getElementById(
-            "successOrderItems"
+            "orderItems"
         );
 
 
     if (!container) {
+
+        console.error(
+            "orderItems element not found."
+        );
 
         return;
 
@@ -249,7 +333,10 @@ function displayOrderItems(items) {
     container.innerHTML = "";
 
 
-    if (!Array.isArray(items) || items.length === 0) {
+    if (
+        !Array.isArray(items) ||
+        items.length === 0
+    ) {
 
         container.innerHTML = `
 
@@ -275,6 +362,14 @@ function displayOrderItems(items) {
 
     items.forEach(function (item) {
 
+        const productName =
+            item.name || "Product";
+
+
+        const brand =
+            item.brand || "-";
+
+
         const price =
             Number(item.price) || 0;
 
@@ -283,7 +378,7 @@ function displayOrderItems(items) {
             Number(item.quantity) || 1;
 
 
-        const subtotal =
+        const itemSubtotal =
             price * quantity;
 
 
@@ -291,54 +386,120 @@ function displayOrderItems(items) {
             document.createElement("tr");
 
 
-        row.innerHTML = `
+        // -------------------------------------------------
+        // PRODUCT
+        // -------------------------------------------------
 
-            <td>
-
-                <strong>
-                    ${escapeHTML(
-                        item.name || "Product"
-                    )}
-                </strong>
-
-            </td>
+        const productCell =
+            document.createElement("td");
 
 
-            <td>
-
-                ${escapeHTML(
-                    item.brand || "-"
-                )}
-
-            </td>
+        const productStrong =
+            document.createElement("strong");
 
 
-            <td class="text-center">
-
-                ${quantity}
-
-            </td>
+        productStrong.textContent =
+            productName;
 
 
-            <td>
-
-                ${formatCurrency(price)}
-
-            </td>
+        productCell.appendChild(
+            productStrong
+        );
 
 
-            <td>
+        // -------------------------------------------------
+        // BRAND
+        // -------------------------------------------------
 
-                <strong>
-                    ${formatCurrency(subtotal)}
-                </strong>
-
-            </td>
-
-        `;
+        const brandCell =
+            document.createElement("td");
 
 
-        container.appendChild(row);
+        brandCell.textContent =
+            brand;
+
+
+        // -------------------------------------------------
+        // QUANTITY
+        // -------------------------------------------------
+
+        const quantityCell =
+            document.createElement("td");
+
+
+        quantityCell.className =
+            "text-center";
+
+
+        quantityCell.textContent =
+            quantity;
+
+
+        // -------------------------------------------------
+        // PRICE
+        // -------------------------------------------------
+
+        const priceCell =
+            document.createElement("td");
+
+
+        priceCell.textContent =
+            formatCurrency(price);
+
+
+        // -------------------------------------------------
+        // SUBTOTAL
+        // -------------------------------------------------
+
+        const subtotalCell =
+            document.createElement("td");
+
+
+        const subtotalStrong =
+            document.createElement("strong");
+
+
+        subtotalStrong.textContent =
+            formatCurrency(itemSubtotal);
+
+
+        subtotalCell.appendChild(
+            subtotalStrong
+        );
+
+
+        // -------------------------------------------------
+        // ADD CELLS
+        // -------------------------------------------------
+
+        row.appendChild(
+            productCell
+        );
+
+
+        row.appendChild(
+            brandCell
+        );
+
+
+        row.appendChild(
+            quantityCell
+        );
+
+
+        row.appendChild(
+            priceCell
+        );
+
+
+        row.appendChild(
+            subtotalCell
+        );
+
+
+        container.appendChild(
+            row
+        );
 
     });
 
@@ -351,30 +512,57 @@ function displayOrderItems(items) {
 
 function showNoOrder() {
 
-    const orderContainer =
+    const orderConfirmation =
         document.getElementById(
             "orderConfirmation"
         );
 
 
-    const noOrderContainer =
-        document.getElementById(
-            "noOrderMessage"
-        );
+    if (orderConfirmation) {
+
+        orderConfirmation.innerHTML = `
+
+            <div class="card-body p-5 text-center">
+
+                <div
+                    class="text-warning"
+                    style="font-size:4rem;"
+                >
+
+                    <i class="bi bi-receipt"></i>
+
+                </div>
 
 
-    if (orderContainer) {
+                <h2 class="mt-3">
 
-        orderContainer.style.display =
-            "none";
+                    No Order Found
 
-    }
+                </h2>
 
 
-    if (noOrderContainer) {
+                <p class="text-muted">
 
-        noOrderContainer.style.display =
-            "block";
+                    We could not find a recent order
+                    to display.
+
+                </p>
+
+
+                <a
+                    href="products.html"
+                    class="btn btn-primary mt-3"
+                >
+
+                    <i class="bi bi-shop"></i>
+
+                    Continue Shopping
+
+                </a>
+
+            </div>
+
+        `;
 
     }
 
@@ -432,60 +620,9 @@ function formatCurrency(amount) {
 
 
 // =========================================================
-// FORMAT DATE
+// GLOBAL
 // =========================================================
 
-function formatDate(dateValue) {
-
-    if (!dateValue) {
-
-        return "-";
-
-    }
-
-
-    const date =
-        new Date(dateValue);
-
-
-    if (isNaN(date.getTime())) {
-
-        return "-";
-
-    }
-
-
-    return date.toLocaleString(
-        "en-PH",
-        {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-            hour: "numeric",
-            minute: "2-digit"
-        }
-    );
-
-}
-
-
-// =========================================================
-// ESCAPE HTML
-// =========================================================
-
-function escapeHTML(value) {
-
-    const div =
-        document.createElement(
-            "div"
-        );
-
-
-    div.textContent =
-        value ?? "";
-
-
-    return div.innerHTML;
-
-}
+window.loadOrderConfirmation =
+    loadOrderConfirmation;
 ```
