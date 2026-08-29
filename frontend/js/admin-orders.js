@@ -1117,16 +1117,15 @@ async function updateOrderStatus(
 
 
         const {
-            data,
-            error
-        } = await supabaseClient
-            .from("orders")
-            .update({
-                status: newStatus
-            })
-            .eq("id", orderId)
-            .select()
-            .single();
+    data,
+    error
+} = await supabaseClient
+    .from("orders")
+    .update({
+        status: newStatus
+    })
+    .eq("id", orderId)
+    .select();
 
 
         // =================================================
