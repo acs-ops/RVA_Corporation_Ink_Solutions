@@ -496,6 +496,10 @@ function createStatusBadge(status) {
 // VIEW ORDER DETAILS
 // =========================================================
 
+// =========================================================
+// VIEW ORDER DETAILS
+// =========================================================
+
 function viewOrderDetails(orderId) {
 
     const order =
@@ -580,37 +584,27 @@ function viewOrderDetails(orderId) {
             <tr>
 
                 <td>
-
                     ${escapeHTML(
                         item.name || "Product"
                     )}
-
                 </td>
 
                 <td>
-
                     ${escapeHTML(
                         item.brand || ""
                     )}
-
                 </td>
 
                 <td class="text-center">
-
                     ${quantity}
-
                 </td>
 
                 <td>
-
                     ${formatCurrency(price)}
-
                 </td>
 
                 <td>
-
                     ${formatCurrency(subtotal)}
-
                 </td>
 
             </tr>
@@ -618,6 +612,14 @@ function viewOrderDetails(orderId) {
         `;
 
     });
+
+
+    // =====================================================
+    // CURRENT STATUS
+    // =====================================================
+
+    const currentStatus =
+        order.status || "Pending";
 
 
     // =====================================================
@@ -746,19 +748,76 @@ function viewOrderDetails(orderId) {
             </div>
 
 
+            <!-- =================================================
+                 STATUS
+                 ================================================= -->
+
             <div class="col-md-6">
 
-                <strong>
-                    Status
-                </strong>
+                <label
+                    for="orderStatusSelect"
+                    class="form-label fw-bold"
+                >
 
-                <div class="mt-1">
+                    Order Status
 
-                    ${createStatusBadge(
-                        order.status || "Pending"
-                    )}
+                </label>
 
-                </div>
+
+                <select
+                    id="orderStatusSelect"
+                    class="form-select"
+                >
+
+                    <option
+                        value="Pending"
+                        ${currentStatus === "Pending" ? "selected" : ""}
+                    >
+                        Pending
+                    </option>
+
+                    <option
+                        value="Confirmed"
+                        ${currentStatus === "Confirmed" ? "selected" : ""}
+                    >
+                        Confirmed
+                    </option>
+
+                    <option
+                        value="Processing"
+                        ${currentStatus === "Processing" ? "selected" : ""}
+                    >
+                        Processing
+                    </option>
+
+                    <option
+                        value="Completed"
+                        ${currentStatus === "Completed" ? "selected" : ""}
+                    >
+                        Completed
+                    </option>
+
+                    <option
+                        value="Cancelled"
+                        ${currentStatus === "Cancelled" ? "selected" : ""}
+                    >
+                        Cancelled
+                    </option>
+
+                </select>
+
+
+                <button
+                    type="button"
+                    class="btn btn-primary btn-sm mt-2"
+                    id="updateOrderStatusButton"
+                >
+
+                    <i class="bi bi-check-circle"></i>
+
+                    Update Status
+
+                </button>
 
             </div>
 
@@ -818,7 +877,8 @@ function viewOrderDetails(orderId) {
 
                             <td
                                 colspan="5"
-                                class="text-center text-muted">
+                                class="text-center text-muted"
+                            >
 
                                 No product details available.
 
@@ -891,7 +951,9 @@ function viewOrderDetails(orderId) {
                     </strong>
 
                     <strong class="fs-5 text-primary">
+
                         ${formatCurrency(order.total)}
+
                     </strong>
 
                 </div>
@@ -907,12 +969,19 @@ function viewOrderDetails(orderId) {
                     <div class="alert alert-light mt-4">
 
                         <strong>
+
                             <i class="bi bi-chat-left-text"></i>
+
                             Order Notes
+
                         </strong>
 
                         <div class="mt-2">
-                            ${escapeHTML(order.order_notes)}
+
+                            ${escapeHTML(
+                                order.order_notes
+                            )}
+
                         </div>
 
                     </div>
@@ -921,6 +990,39 @@ function viewOrderDetails(orderId) {
         }
 
     `;
+
+
+    // =====================================================
+    // STATUS UPDATE BUTTON
+    // =====================================================
+
+    const updateStatusButton =
+        document.getElementById(
+            "updateOrderStatusButton"
+        );
+
+
+    const statusSelect =
+        document.getElementById(
+            "orderStatusSelect"
+        );
+
+
+    if (updateStatusButton && statusSelect) {
+
+        updateStatusButton.addEventListener(
+            "click",
+            function () {
+
+                updateOrderStatus(
+                    order.id,
+                    statusSelect.value
+                );
+
+            }
+        );
+
+    }
 
 
     // =====================================================
@@ -936,12 +1038,235 @@ function viewOrderDetails(orderId) {
     if (modalElement) {
 
         const modal =
-            new bootstrap.Modal(
+            bootstrap.Modal.getOrCreateInstance(
                 modalElement
             );
 
 
         modal.show();
+
+    }
+
+}
+
+
+// =========================================================
+// UPDATE ORDER STATUS
+// =========================================================
+
+async function updateOrderStatus(
+    orderId,
+    newStatus
+) {
+
+    if (!orderId || !newStatus) {
+
+        alert(
+            "Invalid order status."
+        );
+
+        return;
+
+    }
+
+
+    const confirmed =
+        confirm(
+            "Change this order status to " +
+            newStatus +
+            "?"
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    const button =
+        document.getElementById(
+            "updateOrderStatusButton"
+        );
+
+
+    if (button) {
+
+        button.disabled = true;
+
+        button.innerHTML = `
+
+            <span
+                class="spinner-border spinner-border-sm"
+                role="status"
+            ></span>
+
+            Updating...
+
+        `;
+
+    }
+
+
+    try {
+
+        console.log(
+            "Updating order status:",
+            orderId,
+            newStatus
+        );
+
+
+        const {
+            data,
+            error
+        } = await supabaseClient
+            .from("orders")
+            .update({
+                status: newStatus
+            })
+            .eq("id", orderId)
+            .select()
+            .single();
+
+
+        // =================================================
+        // ERROR
+        // =================================================
+
+        if (error) {
+
+            console.error(
+                "Order status update failed:",
+                error
+            );
+
+
+            alert(
+                "Order status could not be updated.\n\n" +
+                "Error: " +
+                error.message
+            );
+
+
+            if (button) {
+
+                button.disabled = false;
+
+                button.innerHTML = `
+
+                    <i class="bi bi-check-circle"></i>
+
+                    Update Status
+
+                `;
+
+            }
+
+            return;
+
+        }
+
+
+        console.log(
+            "Order status updated:",
+            data
+        );
+
+
+        // =================================================
+        // UPDATE LOCAL ORDER
+        // =================================================
+
+        const order =
+            allOrders.find(function (item) {
+
+                return item.id === orderId;
+
+            });
+
+
+        if (order) {
+
+            order.status =
+                newStatus;
+
+        }
+
+
+        // =================================================
+        // REFRESH STATISTICS
+        // =================================================
+
+        updateStatistics();
+
+
+        // =================================================
+        // REFRESH TABLE
+        // =================================================
+
+        filterOrders();
+
+
+        // =================================================
+        // SUCCESS
+        // =================================================
+
+        alert(
+            "Order status updated successfully!\n\n" +
+            "New Status: " +
+            newStatus
+        );
+
+
+        // =================================================
+        // CLOSE MODAL
+        // =================================================
+
+        const modalElement =
+            document.getElementById(
+                "orderDetailsModal"
+            );
+
+
+        if (modalElement) {
+
+            const modal =
+                bootstrap.Modal.getOrCreateInstance(
+                    modalElement
+                );
+
+
+            modal.hide();
+
+        }
+
+
+    } catch (error) {
+
+        console.error(
+            "Order status update error:",
+            error
+        );
+
+
+        alert(
+            "There was a problem updating the order status."
+        );
+
+
+        if (button) {
+
+            button.disabled = false;
+
+            button.innerHTML = `
+
+                <i class="bi bi-check-circle"></i>
+
+                Update Status
+
+            `;
+
+        }
 
     }
 
@@ -1206,3 +1531,7 @@ window.loadOrders =
 
 window.viewOrderDetails =
     viewOrderDetails;
+
+
+window.updateOrderStatus =
+    updateOrderStatus;
