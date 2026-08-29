@@ -34,7 +34,128 @@
     rel="stylesheet"
     href="css/style.css"
 >
-```
+
+<style>
+
+/* =========================================================
+   PRINT RECEIPT
+   ========================================================= */
+
+@media print {
+
+    body {
+        background: white !important;
+        margin: 0;
+        padding: 0;
+    }
+
+    .top-header,
+    .main-menu,
+    footer,
+    .btn,
+    .account-area {
+        display: none !important;
+    }
+
+    section {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    .container {
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+
+    #orderConfirmation {
+    box-shadow: none !important;
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+    #orderConfirmation .card-body {
+        padding: 15px !important;
+    }
+
+    .text-success {
+        display: none !important;
+    }
+
+    .text-center h1 {
+        font-size: 24px !important;
+        margin-top: 0 !important;
+    }
+
+    .alert-success {
+        border: 1px solid #999 !important;
+        background: white !important;
+        color: black !important;
+    }
+
+    .badge {
+        border: 1px solid #555 !important;
+        background: white !important;
+        color: black !important;
+    }
+
+    table {
+        width: 100% !important;
+        font-size: 12px;
+        page-break-inside: auto;
+    }
+
+    table th,
+    table td {
+        padding: 6px !important;
+    }
+
+    tr {
+        page-break-inside: avoid;
+        page-break-after: auto;
+    }
+
+    #orderNotesContainer {
+        display: block !important;
+        border: 1px solid #ccc !important;
+        background: white !important;
+    }
+
+
+    /* PRINT-ONLY COMPANY HEADER */
+
+    .receipt-company {
+        display: block !important;
+        text-align: center;
+        margin-bottom: 15px;
+    }
+
+    .receipt-company img {
+        width: 90px;
+        height: auto;
+        margin-bottom: 5px;
+    }
+
+    .receipt-company h2 {
+        font-size: 18px;
+        margin: 0;
+    }
+
+    .receipt-company p {
+        font-size: 11px;
+        margin: 2px 0;
+    }
+
+}
+
+
+/* Hide company receipt header on normal screen */
+
+.receipt-company {
+    display: none;
+}
+
+</style>
 
 </head>
 
@@ -176,6 +297,22 @@
     >
 
         <div class="card-body p-4 p-md-5">
+            <div class="receipt-company">
+
+    <img
+        src="images/logo/logo.jpg"
+        alt="Romeo V. Austria Corporation"
+    >
+
+    <h2>
+        Romeo V. Austria Corporation
+    </h2>
+
+    <p>
+        Ink and Toner Distributor and Remanufacturer
+    </p>
+
+</div>
 
 
             <!-- SUCCESS HEADER -->
