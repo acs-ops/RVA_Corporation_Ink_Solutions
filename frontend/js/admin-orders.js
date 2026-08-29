@@ -1,4 +1,3 @@
-```javascript
 // =========================================================
 // RVA CORPORATION - ADMIN ORDERS
 // =========================================================
@@ -7,31 +6,29 @@
 
 
 // =========================================================
-// VARIABLES
+// INITIALIZE
+// =========================================================
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    console.log("RVA Admin Orders initialized.");
+
+    loadOrders();
+
+    setupAdminControls();
+
+});
+
+
+// =========================================================
+// GLOBAL ORDERS
 // =========================================================
 
 let allOrders = [];
 
 
 // =========================================================
-// INITIALIZE
-// =========================================================
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    loadOrders();
-
-    setupSearch();
-
-    setupStatusFilter();
-
-    setupRefreshButton();
-
-});
-
-
-// =========================================================
-// LOAD ORDERS
+// LOAD ORDERS FROM SUPABASE
 // =========================================================
 
 async function loadOrders() {
@@ -39,7 +36,9 @@ async function loadOrders() {
     const tableBody =
         document.getElementById("ordersTableBody");
 
+
     if (!tableBody) {
+        console.error("ordersTableBody not found.");
         return;
     }
 
@@ -47,22 +46,23 @@ async function loadOrders() {
     tableBody.innerHTML = `
         <tr>
             <td colspan="9" class="text-center py-5">
-
                 <div
                     class="spinner-border text-primary"
-                    role="status"
-                ></div>
+                    role="status">
+                </div>
 
                 <div class="mt-2">
                     Loading orders...
                 </div>
-
             </td>
         </tr>
     `;
 
 
     try {
+
+        console.log("Loading RVA orders from Supabase...");
+
 
         const {
             data,
@@ -78,26 +78,27 @@ async function loadOrders() {
         if (error) {
 
             console.error(
-                "Error loading orders:",
+                "Failed to load orders:",
                 error
             );
 
+
             tableBody.innerHTML = `
                 <tr>
-                    <td
-                        colspan="9"
-                        class="text-center text-danger py-5"
-                    >
+                    <td colspan="9" class="text-center py-5">
 
-                        <i class="bi bi-exclamation-triangle fs-2"></i>
+                        <i
+                            class="bi bi-exclamation-triangle text-danger"
+                            style="font-size:2rem;">
+                        </i>
 
-                        <div class="mt-2">
-                            Unable to load orders.
+                        <div class="mt-3 text-danger">
+                            Failed to load orders.
                         </div>
 
-                        <small>
+                        <div class="small text-muted mt-2">
                             ${escapeHTML(error.message)}
-                        </small>
+                        </div>
 
                     </td>
                 </tr>
@@ -107,10 +108,13 @@ async function loadOrders() {
         }
 
 
-        allOrders =
-            Array.isArray(data)
-                ? data
-                : [];
+        allOrders = data || [];
+
+
+        console.log(
+            "RVA orders loaded:",
+            allOrders
+        );
 
 
         updateStatistics();
@@ -120,18 +124,23 @@ async function loadOrders() {
     } catch (error) {
 
         console.error(
-            "Unexpected error loading orders:",
+            "Admin orders error:",
             error
         );
 
+
         tableBody.innerHTML = `
             <tr>
-                <td
-                    colspan="9"
-                    class="text-center text-danger py-5"
-                >
+                <td colspan="9" class="text-center py-5">
 
-                    An unexpected error occurred.
+                    <i
+                        class="bi bi-wifi-off text-danger"
+                        style="font-size:2rem;">
+                    </i>
+
+                    <div class="mt-3">
+                        Unable to connect to order database.
+                    </div>
 
                 </td>
             </tr>
@@ -162,18 +171,24 @@ function displayOrders(orders) {
     tableBody.innerHTML = "";
 
 
-    if (!orders.length) {
+    // =====================================================
+    // NO ORDERS
+    // =====================================================
+
+    if (!orders || orders.length === 0) {
 
         tableBody.innerHTML = `
             <tr>
                 <td
                     colspan="9"
-                    class="text-center text-muted py-5"
-                >
+                    class="text-center py-5 text-muted">
 
-                    <i class="bi bi-inbox fs-1"></i>
+                    <i
+                        class="bi bi-inbox"
+                        style="font-size:3rem;">
+                    </i>
 
-                    <div class="mt-2">
+                    <div class="mt-3">
                         No orders found.
                     </div>
 
@@ -185,39 +200,67 @@ function displayOrders(orders) {
     }
 
 
+    // =====================================================
+    // CREATE ROWS
+    // =====================================================
+
     orders.forEach(function (order) {
 
         const row =
             document.createElement("tr");
 
 
+        // ORDER NUMBER
+
         const orderNumber =
             order.order_number || "-";
 
 
-        const customerName =
+        // CUSTOMER
+
+        const customer =
             order.full_name || "-";
 
+
+        const email =
+            order.email || "";
+
+
+        const phone =
+            order.phone || "";
+
+
+        // ORDER TYPE
 
         const orderType =
             order.order_type || "-";
 
 
+        // PAYMENT
+
         const payment =
             order.payment_method || "-";
 
+
+        // ITEMS
 
         const itemCount =
             Number(order.total_items) || 0;
 
 
-        const total =
-            Number(order.total) || 0;
+        // TOTAL
 
+        const total =
+            formatCurrency(order.total);
+
+
+        // STATUS
 
         const status =
             order.status || "Pending";
 
+
+        // DATE
 
         const date =
             formatDate(order.created_at);
@@ -237,15 +280,19 @@ function displayOrders(orders) {
             <td>
 
                 <strong>
-                    ${escapeHTML(customerName)}
+                    ${escapeHTML(customer)}
                 </strong>
 
                 <br>
 
                 <small class="text-muted">
+                    ${escapeHTML(email)}
+                </small>
 
-                    ${escapeHTML(order.email || "")}
+                <br>
 
+                <small class="text-muted">
+                    ${escapeHTML(phone)}
                 </small>
 
             </td>
@@ -253,7 +300,11 @@ function displayOrders(orders) {
 
             <td>
 
-                ${escapeHTML(orderType)}
+                <span class="badge bg-light text-dark">
+
+                    ${escapeHTML(orderType)}
+
+                </span>
 
             </td>
 
@@ -265,7 +316,7 @@ function displayOrders(orders) {
             </td>
 
 
-            <td>
+            <td class="text-center">
 
                 ${itemCount}
 
@@ -275,9 +326,7 @@ function displayOrders(orders) {
             <td>
 
                 <strong>
-
-                    ${formatCurrency(total)}
-
+                    ${total}
                 </strong>
 
             </td>
@@ -303,9 +352,8 @@ function displayOrders(orders) {
 
                 <button
                     type="button"
-                    class="btn btn-sm btn-outline-primary"
-                    onclick="viewOrder(${order.id})"
-                >
+                    class="btn btn-sm btn-primary"
+                    onclick="viewOrderDetails(${order.id})">
 
                     <i class="bi bi-eye"></i>
 
@@ -321,285 +369,6 @@ function displayOrders(orders) {
         tableBody.appendChild(row);
 
     });
-
-}
-
-
-// =========================================================
-// VIEW ORDER
-// =========================================================
-
-function viewOrder(orderId) {
-
-    const order =
-        allOrders.find(function (item) {
-
-            return item.id === orderId;
-
-        });
-
-
-    if (!order) {
-
-        alert(
-            "Order could not be found."
-        );
-
-        return;
-
-    }
-
-
-    const details =
-        document.getElementById(
-            "orderDetails"
-        );
-
-
-    if (!details) {
-        return;
-    }
-
-
-    const items =
-        Array.isArray(order.items)
-            ? order.items
-            : [];
-
-
-    let itemsHTML = "";
-
-
-    if (items.length) {
-
-        itemsHTML = items.map(function (item) {
-
-            const name =
-                item.name || "Product";
-
-
-            const quantity =
-                Number(item.quantity) || 1;
-
-
-            const price =
-                Number(item.price) || 0;
-
-
-            const subtotal =
-                price * quantity;
-
-
-            return `
-
-                <div
-                    class="d-flex justify-content-between border-bottom py-2"
-                >
-
-                    <div>
-
-                        <strong>
-                            ${escapeHTML(name)}
-                        </strong>
-
-                        <br>
-
-                        <small class="text-muted">
-
-                            ${formatCurrency(price)}
-                            ×
-                            ${quantity}
-
-                        </small>
-
-                    </div>
-
-
-                    <strong>
-
-                        ${formatCurrency(subtotal)}
-
-                    </strong>
-
-                </div>
-
-            `;
-
-        }).join("");
-
-    } else {
-
-        itemsHTML = `
-            <p class="text-muted">
-                No product details available.
-            </p>
-        `;
-
-    }
-
-
-    details.innerHTML = `
-
-        <div class="row g-4">
-
-
-            <div class="col-md-6">
-
-                <h6>
-                    Customer Information
-                </h6>
-
-                <hr>
-
-                <p>
-                    <strong>Name:</strong><br>
-                    ${escapeHTML(order.full_name || "-")}
-                </p>
-
-                <p>
-                    <strong>Email:</strong><br>
-                    ${escapeHTML(order.email || "-")}
-                </p>
-
-                <p>
-                    <strong>Phone:</strong><br>
-                    ${escapeHTML(order.phone || "-")}
-                </p>
-
-                <p>
-                    <strong>Address:</strong><br>
-                    ${escapeHTML(order.address || "-")}
-                </p>
-
-            </div>
-
-
-            <div class="col-md-6">
-
-                <h6>
-                    Order Information
-                </h6>
-
-                <hr>
-
-                <p>
-                    <strong>Order Number:</strong><br>
-                    ${escapeHTML(order.order_number || "-")}
-                </p>
-
-                <p>
-                    <strong>Order Type:</strong><br>
-                    ${escapeHTML(order.order_type || "-")}
-                </p>
-
-                <p>
-                    <strong>Payment:</strong><br>
-                    ${escapeHTML(order.payment_method || "-")}
-                </p>
-
-                <p>
-                    <strong>Status:</strong><br>
-                    ${createStatusBadge(order.status || "Pending")}
-                </p>
-
-            </div>
-
-
-            <div class="col-12">
-
-                <h6>
-                    Products
-                </h6>
-
-                <hr>
-
-                ${itemsHTML}
-
-            </div>
-
-
-            <div class="col-12">
-
-                <hr>
-
-                <div class="d-flex justify-content-between">
-
-                    <strong>
-                        Subtotal
-                    </strong>
-
-                    <strong>
-                        ${formatCurrency(order.subtotal)}
-                    </strong>
-
-                </div>
-
-
-                <div class="d-flex justify-content-between">
-
-                    <strong>
-                        Delivery
-                    </strong>
-
-                    <strong>
-                        ${formatCurrency(order.delivery_fee)}
-                    </strong>
-
-                </div>
-
-
-                <div class="d-flex justify-content-between mt-2">
-
-                    <strong class="fs-5">
-                        Total
-                    </strong>
-
-                    <strong class="text-primary fs-4">
-
-                        ${formatCurrency(order.total)}
-
-                    </strong>
-
-                </div>
-
-            </div>
-
-
-            <div class="col-12">
-
-                <h6>
-                    Order Notes
-                </h6>
-
-                <p class="text-muted">
-
-                    ${escapeHTML(order.order_notes || "No notes.")}
-
-                </p>
-
-            </div>
-
-        </div>
-
-    `;
-
-
-    const modalElement =
-        document.getElementById(
-            "orderDetailsModal"
-        );
-
-
-    if (modalElement) {
-
-        const modal =
-            new bootstrap.Modal(
-                modalElement
-            );
-
-        modal.show();
-
-    }
 
 }
 
@@ -665,172 +434,6 @@ function updateStatistics() {
 
 
 // =========================================================
-// SEARCH
-// =========================================================
-
-function setupSearch() {
-
-    const searchInput =
-        document.getElementById(
-            "searchOrders"
-        );
-
-
-    if (!searchInput) {
-        return;
-    }
-
-
-    searchInput.addEventListener(
-        "input",
-        applyFilters
-    );
-
-}
-
-
-// =========================================================
-// STATUS FILTER
-// =========================================================
-
-function setupStatusFilter() {
-
-    const statusFilter =
-        document.getElementById(
-            "statusFilter"
-        );
-
-
-    if (!statusFilter) {
-        return;
-    }
-
-
-    statusFilter.addEventListener(
-        "change",
-        applyFilters
-    );
-
-}
-
-
-// =========================================================
-// APPLY FILTERS
-// =========================================================
-
-function applyFilters() {
-
-    const searchInput =
-        document.getElementById(
-            "searchOrders"
-        );
-
-
-    const statusFilter =
-        document.getElementById(
-            "statusFilter"
-        );
-
-
-    const search =
-        searchInput
-            ? searchInput.value
-                .trim()
-                .toLowerCase()
-            : "";
-
-
-    const status =
-        statusFilter
-            ? statusFilter.value
-            : "all";
-
-
-    const filtered =
-        allOrders.filter(function (order) {
-
-            const matchesSearch =
-                !search ||
-
-                String(
-                    order.order_number || ""
-                )
-                .toLowerCase()
-                .includes(search)
-
-                ||
-
-                String(
-                    order.full_name || ""
-                )
-                .toLowerCase()
-                .includes(search)
-
-                ||
-
-                String(
-                    order.email || ""
-                )
-                .toLowerCase()
-                .includes(search)
-
-                ||
-
-                String(
-                    order.phone || ""
-                )
-                .toLowerCase()
-                .includes(search);
-
-
-            const matchesStatus =
-                status === "all" ||
-                order.status === status;
-
-
-            return (
-                matchesSearch &&
-                matchesStatus
-            );
-
-        });
-
-
-    displayOrders(filtered);
-
-}
-
-
-// =========================================================
-// REFRESH
-// =========================================================
-
-function setupRefreshButton() {
-
-    const button =
-        document.getElementById(
-            "refreshOrdersButton"
-        );
-
-
-    if (!button) {
-        return;
-    }
-
-
-    button.addEventListener(
-        "click",
-        function () {
-
-            loadOrders();
-
-        }
-    );
-
-}
-
-
-// =========================================================
 // STATUS BADGE
 // =========================================================
 
@@ -851,7 +454,7 @@ function createStatusBadge(status) {
     if (status === "Confirmed") {
 
         badgeClass =
-            "bg-info text-dark";
+            "bg-primary";
 
     }
 
@@ -859,7 +462,7 @@ function createStatusBadge(status) {
     if (status === "Processing") {
 
         badgeClass =
-            "bg-primary";
+            "bg-info text-dark";
 
     }
 
@@ -881,14 +484,630 @@ function createStatusBadge(status) {
 
 
     return `
-
         <span class="badge ${badgeClass}">
-
             ${escapeHTML(status)}
-
         </span>
+    `;
+
+}
+
+
+// =========================================================
+// VIEW ORDER DETAILS
+// =========================================================
+
+function viewOrderDetails(orderId) {
+
+    const order =
+        allOrders.find(function (item) {
+
+            return item.id === orderId;
+
+        });
+
+
+    if (!order) {
+
+        alert(
+            "Order could not be found."
+        );
+
+        return;
+
+    }
+
+
+    const container =
+        document.getElementById(
+            "orderDetails"
+        );
+
+
+    if (!container) {
+        return;
+    }
+
+
+    let itemsHTML = "";
+
+
+    // =====================================================
+    // ORDER ITEMS
+    // =====================================================
+
+    let items = order.items;
+
+
+    if (typeof items === "string") {
+
+        try {
+
+            items =
+                JSON.parse(items);
+
+        } catch (error) {
+
+            items = [];
+
+        }
+
+    }
+
+
+    if (!Array.isArray(items)) {
+
+        items = [];
+
+    }
+
+
+    items.forEach(function (item) {
+
+        const price =
+            Number(item.price) || 0;
+
+
+        const quantity =
+            Number(item.quantity) || 1;
+
+
+        const subtotal =
+            price * quantity;
+
+
+        itemsHTML += `
+
+            <tr>
+
+                <td>
+
+                    ${escapeHTML(
+                        item.name || "Product"
+                    )}
+
+                </td>
+
+                <td>
+
+                    ${escapeHTML(
+                        item.brand || ""
+                    )}
+
+                </td>
+
+                <td class="text-center">
+
+                    ${quantity}
+
+                </td>
+
+                <td>
+
+                    ${formatCurrency(price)}
+
+                </td>
+
+                <td>
+
+                    ${formatCurrency(subtotal)}
+
+                </td>
+
+            </tr>
+
+        `;
+
+    });
+
+
+    // =====================================================
+    // ORDER DETAILS HTML
+    // =====================================================
+
+    container.innerHTML = `
+
+        <div class="row g-3 mb-4">
+
+            <div class="col-md-6">
+
+                <strong>
+                    Order Number
+                </strong>
+
+                <div>
+                    ${escapeHTML(
+                        order.order_number || "-"
+                    )}
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6">
+
+                <strong>
+                    Order Date
+                </strong>
+
+                <div>
+                    ${formatDate(order.created_at)}
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6">
+
+                <strong>
+                    Customer
+                </strong>
+
+                <div>
+                    ${escapeHTML(
+                        order.full_name || "-"
+                    )}
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6">
+
+                <strong>
+                    Phone
+                </strong>
+
+                <div>
+                    ${escapeHTML(
+                        order.phone || "-"
+                    )}
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6">
+
+                <strong>
+                    Email
+                </strong>
+
+                <div>
+                    ${escapeHTML(
+                        order.email || "-"
+                    )}
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6">
+
+                <strong>
+                    Order Type
+                </strong>
+
+                <div>
+                    ${escapeHTML(
+                        order.order_type || "-"
+                    )}
+                </div>
+
+            </div>
+
+
+            <div class="col-12">
+
+                <strong>
+                    Address
+                </strong>
+
+                <div>
+                    ${escapeHTML(
+                        order.address || "-"
+                    )}
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6">
+
+                <strong>
+                    Payment Method
+                </strong>
+
+                <div>
+                    ${escapeHTML(
+                        order.payment_method || "-"
+                    )}
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6">
+
+                <strong>
+                    Status
+                </strong>
+
+                <div class="mt-1">
+
+                    ${createStatusBadge(
+                        order.status || "Pending"
+                    )}
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <hr>
+
+
+        <h5 class="mb-3">
+
+            <i class="bi bi-cart3"></i>
+
+            Ordered Products
+
+        </h5>
+
+
+        <div class="table-responsive">
+
+            <table class="table table-bordered">
+
+                <thead class="table-light">
+
+                    <tr>
+
+                        <th>
+                            Product
+                        </th>
+
+                        <th>
+                            Brand
+                        </th>
+
+                        <th>
+                            Qty
+                        </th>
+
+                        <th>
+                            Price
+                        </th>
+
+                        <th>
+                            Subtotal
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    ${itemsHTML || `
+
+                        <tr>
+
+                            <td
+                                colspan="5"
+                                class="text-center text-muted">
+
+                                No product details available.
+
+                            </td>
+
+                        </tr>
+
+                    `}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <hr>
+
+
+        <div class="row justify-content-end">
+
+            <div class="col-md-5">
+
+                <div class="d-flex justify-content-between mb-2">
+
+                    <span>
+                        Items
+                    </span>
+
+                    <strong>
+                        ${Number(order.total_items) || 0}
+                    </strong>
+
+                </div>
+
+
+                <div class="d-flex justify-content-between mb-2">
+
+                    <span>
+                        Subtotal
+                    </span>
+
+                    <strong>
+                        ${formatCurrency(order.subtotal)}
+                    </strong>
+
+                </div>
+
+
+                <div class="d-flex justify-content-between mb-2">
+
+                    <span>
+                        Delivery
+                    </span>
+
+                    <strong>
+                        ${formatCurrency(order.delivery_fee)}
+                    </strong>
+
+                </div>
+
+
+                <hr>
+
+
+                <div class="d-flex justify-content-between">
+
+                    <strong class="fs-5">
+                        Total
+                    </strong>
+
+                    <strong class="fs-5 text-primary">
+                        ${formatCurrency(order.total)}
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        ${
+            order.order_notes
+                ? `
+                    <div class="alert alert-light mt-4">
+
+                        <strong>
+                            <i class="bi bi-chat-left-text"></i>
+                            Order Notes
+                        </strong>
+
+                        <div class="mt-2">
+                            ${escapeHTML(order.order_notes)}
+                        </div>
+
+                    </div>
+                `
+                : ""
+        }
 
     `;
+
+
+    // =====================================================
+    // OPEN MODAL
+    // =====================================================
+
+    const modalElement =
+        document.getElementById(
+            "orderDetailsModal"
+        );
+
+
+    if (modalElement) {
+
+        const modal =
+            new bootstrap.Modal(
+                modalElement
+            );
+
+
+        modal.show();
+
+    }
+
+}
+
+
+// =========================================================
+// SEARCH + FILTER
+// =========================================================
+
+function filterOrders() {
+
+    const searchInput =
+        document.getElementById(
+            "searchOrders"
+        );
+
+
+    const statusFilter =
+        document.getElementById(
+            "statusFilter"
+        );
+
+
+    const search =
+        searchInput
+            ? searchInput.value
+                .toLowerCase()
+                .trim()
+            : "";
+
+
+    const status =
+        statusFilter
+            ? statusFilter.value
+            : "all";
+
+
+    const filtered =
+        allOrders.filter(function (order) {
+
+            const searchableText = (
+
+                (order.order_number || "") +
+                " " +
+                (order.full_name || "") +
+                " " +
+                (order.email || "") +
+                " " +
+                (order.phone || "")
+
+            ).toLowerCase();
+
+
+            const matchesSearch =
+                !search ||
+                searchableText.includes(search);
+
+
+            const matchesStatus =
+                status === "all" ||
+                order.status === status;
+
+
+            return (
+                matchesSearch &&
+                matchesStatus
+            );
+
+        });
+
+
+    displayOrders(filtered);
+
+}
+
+
+// =========================================================
+// ADMIN CONTROLS
+// =========================================================
+
+function setupAdminControls() {
+
+    const refreshButton =
+        document.getElementById(
+            "refreshOrdersButton"
+        );
+
+
+    if (refreshButton) {
+
+        refreshButton.addEventListener(
+            "click",
+            function () {
+
+                loadOrders();
+
+            }
+        );
+
+    }
+
+
+    const searchInput =
+        document.getElementById(
+            "searchOrders"
+        );
+
+
+    if (searchInput) {
+
+        searchInput.addEventListener(
+            "input",
+            function () {
+
+                filterOrders();
+
+            }
+        );
+
+    }
+
+
+    const statusFilter =
+        document.getElementById(
+            "statusFilter"
+        );
+
+
+    if (statusFilter) {
+
+        statusFilter.addEventListener(
+            "change",
+            function () {
+
+                filterOrders();
+
+            }
+        );
+
+    }
+
+}
+
+
+// =========================================================
+// HELPER - SET TEXT
+// =========================================================
+
+function setText(
+    elementId,
+    value
+) {
+
+    const element =
+        document.getElementById(
+            elementId
+        );
+
+
+    if (element) {
+
+        element.textContent =
+            value;
+
+    }
 
 }
 
@@ -925,7 +1144,9 @@ function formatCurrency(amount) {
 function formatDate(dateValue) {
 
     if (!dateValue) {
+
         return "-";
+
     }
 
 
@@ -933,8 +1154,10 @@ function formatDate(dateValue) {
         new Date(dateValue);
 
 
-    if (Number.isNaN(date.getTime())) {
+    if (isNaN(date.getTime())) {
+
         return "-";
+
     }
 
 
@@ -948,31 +1171,6 @@ function formatDate(dateValue) {
             minute: "2-digit"
         }
     );
-
-}
-
-
-// =========================================================
-// SET TEXT
-// =========================================================
-
-function setText(
-    elementId,
-    value
-) {
-
-    const element =
-        document.getElementById(
-            elementId
-        );
-
-
-    if (element) {
-
-        element.textContent =
-            value;
-
-    }
 
 }
 
@@ -999,9 +1197,12 @@ function escapeHTML(value) {
 
 
 // =========================================================
-// GLOBAL
+// GLOBAL FUNCTION
 // =========================================================
 
-window.viewOrder =
-    viewOrder;
-```
+window.loadOrders =
+    loadOrders;
+
+
+window.viewOrderDetails =
+    viewOrderDetails;
