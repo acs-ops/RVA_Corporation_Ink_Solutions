@@ -329,15 +329,40 @@
 <!-- =========================================================
      REGISTER JAVASCRIPT
      ========================================================= -->
-
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+
+// =========================================================
+// RVA CORPORATION
+// SUPABASE CONFIGURATION
+// =========================================================
+
+const SUPABASE_URL =
+    "https://amtowqzobrlfdhdicxqd.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable_FsthuMf-C54MJc1mEotefg_zSoFiFJV";
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+
+// =========================================================
+// REGISTER ACCOUNT
+// =========================================================
 
 document
     .getElementById("registerForm")
-    .addEventListener("submit", function(event) {
+    .addEventListener("submit", async function(event) {
 
         event.preventDefault();
 
+
+        // GET FORM VALUES
 
         const name =
             document
@@ -364,6 +389,16 @@ document
 
         const message =
             document.getElementById("registerMessage");
+
+        const button =
+            document.querySelector(
+                "#registerForm button[type='submit']"
+            );
+
+
+        // CLEAR MESSAGE
+
+        message.innerHTML = "";
 
 
         // CHECK PASSWORD
@@ -395,84 +430,118 @@ document
         }
 
 
-        // GET EXISTING USERS
+        // DISABLE BUTTON
 
-        let users =
-            JSON.parse(
-                localStorage.getItem("rvaUsers")
-            ) || [];
+        button.disabled = true;
 
-
-        // CHECK IF EMAIL ALREADY EXISTS
-
-        const existingUser =
-            users.find(
-                user => user.email === email
-            );
-
-
-        if (existingUser) {
-
-            message.innerHTML = `
-                <div class="alert alert-warning">
-                    <i class="bi bi-exclamation-triangle"></i>
-                    This email is already registered.
-                </div>
-            `;
-
-            return;
-        }
-
-
-        // CREATE USER
-
-        const newUser = {
-
-            name: name,
-
-            email: email,
-
-            password: password
-
-        };
-
-
-        // SAVE USER
-
-        users.push(newUser);
-
-        localStorage.setItem(
-            "rvaUsers",
-            JSON.stringify(users)
-        );
-
-
-        // SUCCESS MESSAGE
-
-        message.innerHTML = `
-            <div class="alert alert-success">
-                <i class="bi bi-check-circle"></i>
-                Account created successfully!
-                Redirecting to login...
-            </div>
+        button.innerHTML = `
+            <span class="spinner-border spinner-border-sm"></span>
+            Creating Account...
         `;
 
 
-        // CLEAR FORM
+        try {
 
-        document
-            .getElementById("registerForm")
-            .reset();
+            // =================================================
+            // CREATE SUPABASE AUTH ACCOUNT
+            // =================================================
+
+            const {
+                data,
+                error
+            } = await supabaseClient.auth.signUp({
+
+                email: email,
+
+                password: password,
+
+                options: {
+
+                    data: {
+                        full_name: name
+                    }
+
+                }
+
+            });
 
 
-        // REDIRECT TO LOGIN
+            // =================================================
+            // HANDLE ERROR
+            // =================================================
 
-        setTimeout(function() {
+            if (error) {
 
-            window.location.href =
-                "login.html";
+                console.error(
+                    "Registration error:",
+                    error
+                );
 
-        }, 1500);
+                message.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-circle"></i>
+                        ${error.message}
+                    </div>
+                `;
+
+                return;
+            }
+
+
+            // =================================================
+            // SUCCESS
+            // =================================================
+
+            message.innerHTML = `
+                <div class="alert alert-success">
+                    <i class="bi bi-check-circle"></i>
+                    Account created successfully!
+                    Redirecting to login...
+                </div>
+            `;
+
+
+            // CLEAR FORM
+
+            document
+                .getElementById("registerForm")
+                .reset();
+
+
+            // REDIRECT
+
+            setTimeout(function() {
+
+                window.location.href =
+                    "login.html";
+
+            }, 1500);
+
+
+        } catch (error) {
+
+            console.error(
+                "Unexpected registration error:",
+                error
+            );
+
+            message.innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="bi bi-exclamation-circle"></i>
+                    Something went wrong. Please try again.
+                </div>
+            `;
+
+        } finally {
+
+            button.disabled = false;
+
+            button.innerHTML = `
+                <i class="bi bi-person-plus"></i>
+                Create Account
+            `;
+
+        }
 
     });
 
